@@ -10,8 +10,9 @@ namespace TaskList.Components.Domain.Main.Entities
 
         protected TaskEntity() { }
 
-        public TaskEntity(List<ValueObjects.Task> task)
+        public TaskEntity(string userId, List<ValueObjects.Task> task)
         {
+            UserId = userId;
             Tasks = task;
         }
     }

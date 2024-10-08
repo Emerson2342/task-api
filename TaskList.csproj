@@ -7,14 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Domain\Infra\Data\" />
-    <Folder Include="Components\Domain\Infra\Mappings\" />
     <Folder Include="Components\Domain\Main\Controllers\" />
-    <Folder Include="Components\Domain\Main\Entities\" />
     <Folder Include="Components\Domain\Main\UseCases\Contracts\" />
     <Folder Include="Components\Domain\Main\UseCases\Create\" />
-    <Folder Include="Components\Domain\Main\ValueObjects\" />
-    <Folder Include="Components\Domain\Shared\Entities\" />
   </ItemGroup>
 
   <ItemGroup>
