@@ -10,33 +10,8 @@ namespace TaskList.Components.Domain.Infra.Mappings
         public void Configure(EntityTypeBuilder<TaskEntity> builder)
         {
             builder.ToTable("tasklist");
-            builder.HasKey(t => t.UserId);
-
-            builder.OwnsMany(t => t.Tasks)
-                .Property(x =>x.Title)
-                .HasColumnName("title")
-                .HasColumnType("VARCHAR(30)")
-                .IsRequired();
-
-            builder.OwnsMany(t => t.Tasks)
-                .Property(x => x.Description)
-                .HasColumnName("description")
-                .HasColumnType("VARCHAR(255)")
-                .IsRequired();
-
-            builder.OwnsMany(t => t.Tasks)
-               .Property(x => x.StartTime)
-               .HasColumnName("started_at")
-               .HasColumnType("DATETIME")
-               .IsRequired();
-            builder.OwnsMany(t => t.Tasks)
-               .Property(x => x.Deadline)
-               .HasColumnName("deadline")
-               .HasColumnType("DATETIME")
-               .IsRequired();
-
-
-
+           
+            builder.HasOne(t =>t.User).WithMany(u=>u.Tasks).IsRequired();
 
         }
     }

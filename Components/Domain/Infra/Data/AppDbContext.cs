@@ -15,6 +15,7 @@ namespace TaskList.Components.Domain.Infra.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new TaskMap());
+            modelBuilder.ApplyConfiguration(new UserMap());
         }
     }
 }

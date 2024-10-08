@@ -2,9 +2,9 @@
 {
     public abstract class Entity
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         protected Entity() {         
-            Id = Guid.NewGuid().ToString("N").ToUpper();        
+            Id = Guid.NewGuid();        
         }
     }
 }

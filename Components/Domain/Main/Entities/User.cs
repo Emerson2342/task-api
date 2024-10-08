@@ -11,6 +11,9 @@ namespace TaskList.Components.Domain.Main.Entities
         public string PartialToken { get; set; }
         public string VerificationCode { get; private set; }
         public bool IsEmailConfirmed { get; set; } = false;
+
+
+        public IList<TaskEntity> Tasks { get; private set; } = new List<TaskEntity>();
         protected User() { }
 
         public User(string name, Email email, Password password)
