@@ -1,5 +1,5 @@
 ﻿
-namespace TaskList.Components.Domain.Main.UseCases.Response
+namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
 {
     public class Response : Shared.UseCases.Response
     {

@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Domain\Main\Controllers\" />
-    <Folder Include="Components\Domain\Main\UseCases\Contracts\" />
-    <Folder Include="Components\Domain\Main\UseCases\Create\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Flunt" Version="2.0.5" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
 	  <PackageReference Include="Microsoft.AspnetCore.Authentication.JwtBearer" Version="8.0.8" />

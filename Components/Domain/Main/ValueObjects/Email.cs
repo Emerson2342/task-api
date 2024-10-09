@@ -1,5 +1,5 @@
-﻿using System.Text.RegularExpressions;
-using TaskList.Components.Domain.Main.UseCases.Response;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace TaskList.Components.Domain.Main.ValueObjects
 {
@@ -7,14 +7,12 @@ namespace TaskList.Components.Domain.Main.ValueObjects
     {
         private const string Pattern = @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
 
+        [Required(ErrorMessage = "Favor, preencher o campo EMAIL")]
         public string Address { get; private set; } = string.Empty;
 
         protected Email() { }
         public Email(string address)
         {
-            if (string.IsNullOrEmpty(address))
-                throw new Exception("Favor preencher o campo email corretamente!");
-
             Address = address.Trim().ToLower();
 
             if (!EmailRegex().IsMatch(Address))

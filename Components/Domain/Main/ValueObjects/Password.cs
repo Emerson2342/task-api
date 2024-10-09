@@ -9,20 +9,13 @@ namespace TaskList.Components.Domain.Main.ValueObjects
         public string PassWord { get; set; }
         protected Password() { }
         public Password(string password)
-        {
-            if (string.IsNullOrEmpty(password)) throw new Exception("Senha inválida");
-
-            if (password.Length < 5)
-                throw new Exception("Senha muito curta");
-
+        {          
             PassWord = Hashing(password);
         }
 
         private static string Hashing(string password)
         {
-            if (string.IsNullOrEmpty(password))
-                throw new Exception("Password should not be null or empty");
-
+           
             password += Configuration.Secrets.PasswordSaltKey;
 
             using var algorithm = new Rfc2898DeriveBytes(password, 16, 500, HashAlgorithmName.SHA256);

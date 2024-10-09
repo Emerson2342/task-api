@@ -1,10 +1,12 @@
-﻿using TaskList.Components.Domain.Main.ValueObjects;
+﻿using System.ComponentModel.DataAnnotations;
+using TaskList.Components.Domain.Main.ValueObjects;
 using TaskList.Components.Domain.Shared.Entities;
 
 namespace TaskList.Components.Domain.Main.Entities
 {
     public class User : Entity
     {
+        [Required(ErrorMessage = "Nome é obrigatório")]
         public string Name { get; private set; } = string.Empty;
         public Email Email { get; private set; }
         public Password Password { get; set; }

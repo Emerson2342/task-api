@@ -1,0 +1,44 @@
+﻿@page "/create-user"
+@using TaskList.Components.Domain.Main.DTOs
+@using TaskList.Components.Domain.Main.Entities
+@using TaskList.Components.Domain.Main.ValueObjects
+@inject HttpClient Http
+
+
+<h3>Criar Usuário</h3>
+
+<EditForm Model="@model" OnValidSubmit="@HandleSubmit" FormName="forms1">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+    <div class="mb-1">
+        <label for="Name" class="form-label">Nome</label>
+        <InputText class="form-control" type="text" id="Name"  @bind-Value="model.Name"  />
+    </div>
+    <div class="mb-3">
+        <label for="Email" class="form-label">Email</label>
+        <InputText class="form-control" type="email" id="Email" @bind-Value="model.Email" />
+    </div>
+    <div class="mb-3">
+        <label for="Password" class="form-label">Senha</label>
+        <InputText class="form-control" type="password" id="Password" @bind-Value="model.Password" />
+    </div>
+
+    <button class="btn btn-success"  type="submit">Criar Usuário</button>
+</EditForm>
+
+
+@code {
+
+    private RequestCreateUser model = new();
+
+   
+    private async Task HandleSubmit()
+    {
+                     
+        var user = new User(model.Name, new Email(model.Email), new Password(model.Password));
+
+        var response = await Http.PostAsJsonAsync("/user/create", user);
+        
+    }
+}
