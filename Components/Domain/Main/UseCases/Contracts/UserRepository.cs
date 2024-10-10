@@ -6,9 +6,9 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
 {
     public class UserRepository : IRepository
     {
-        private readonly ApiDbContext _context;
+        private readonly AppDbContext _context;
 
-        public UserRepository(ApiDbContext context)
+        public UserRepository(AppDbContext context)
         {
             _context = context;
         }
@@ -27,9 +27,14 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
             return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id);
         }
 
+        public async Task<User> GetUserByDynamicTokenAsync(string token)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Token == token);
+        }
+
         public async Task<User> GetUserByTokenAsync(string token)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.PartialToken == token);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == token);
         }
 
         public async Task SaveChangesAsync()

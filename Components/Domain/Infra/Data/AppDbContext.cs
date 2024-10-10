@@ -4,12 +4,12 @@ using TaskList.Components.Domain.Main.Entities;
 
 namespace TaskList.Components.Domain.Infra.Data
 {
-    public class ApiDbContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public DbSet<TaskEntity> Tasks { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<TaskEntity> Tasks { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
 
-        public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
         }

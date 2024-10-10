@@ -10,7 +10,7 @@ builder.AddDataBase();
 builder.AddSmtp();
 builder.AddJwtAuthentication();
 builder.Services.AddControllers();
-
+builder.Services.AddTransient<TokenService>();
 builder.Services.AddScoped<Handler>();
 builder.Services.AddScoped<IRepository, UserRepository>();
 builder.Services.AddTransient<EmailService>();

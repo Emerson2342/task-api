@@ -10,8 +10,8 @@ using TaskList.Components.Domain.Infra.Data;
 
 namespace TaskList.Migrations
 {
-    [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AppDbContext))]
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -67,7 +67,7 @@ namespace TaskList.Migrations
                         .HasColumnType("VARCHAR(100)")
                         .HasColumnName("name");
 
-                    b.Property<string>("PartialToken")
+                    b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("longtext");
 

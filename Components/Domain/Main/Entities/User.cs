@@ -7,15 +7,15 @@ namespace TaskList.Components.Domain.Main.Entities
     public class User : Entity
     {
         [Required(ErrorMessage = "Nome é obrigatório")]
-        public string Name { get; private set; } = string.Empty;
-        public Email Email { get; private set; }
+        public string Name { get;  set; } = string.Empty;
+        public Email Email { get;  set; }
         public Password Password { get; set; }
-        public string PartialToken { get; set; }
-        public string VerificationCode { get; private set; }
+        public string Token { get; set; }
+        public string VerificationCode { get;  set; }
         public bool IsEmailConfirmed { get; set; } = false;
 
 
-        public IList<TaskEntity> Tasks { get; private set; } = new List<TaskEntity>();
+        public IList<TaskEntity> Tasks { get;  set; } = new List<TaskEntity>();
         protected User() { }
 
         public User(string name, Email email, Password password)
@@ -24,7 +24,7 @@ namespace TaskList.Components.Domain.Main.Entities
             Email = email;
             Password = password;
             VerificationCode = Guid.NewGuid().ToString("N")[..10].Replace('.', 'l').ToUpper();
-            PartialToken = NewToken();
+            Token = NewToken();
         }
         public static string NewToken()
         {

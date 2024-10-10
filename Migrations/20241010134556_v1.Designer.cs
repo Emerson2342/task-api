@@ -11,8 +11,8 @@ using TaskList.Components.Domain.Infra.Data;
 
 namespace TaskList.Migrations
 {
-    [DbContext(typeof(ApiDbContext))]
-    [Migration("20241009231048_v1")]
+    [DbContext(typeof(AppDbContext))]
+    [Migration("20241010134556_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -70,7 +70,7 @@ namespace TaskList.Migrations
                         .HasColumnType("VARCHAR(100)")
                         .HasColumnName("name");
 
-                    b.Property<string>("PartialToken")
+                    b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("longtext");
 

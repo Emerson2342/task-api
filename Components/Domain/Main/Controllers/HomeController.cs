@@ -15,11 +15,12 @@ namespace TaskList.Components.Domain.Main.Controllers
             _handler = handler;
         }
 
-        [HttpGet("/v1")]
-        public IActionResult Get()
+        [HttpGet("/login")]
+        public async Task<IActionResult> Login([FromBody] RequestLogin login)
         {
-          
-            return Ok("result");
+            var result = await _handler.Login(login);
+
+            return Ok(result);
         }
     }
 }

@@ -1,13 +1,17 @@
 ﻿@page "/create-user"
+@using TaskList.Components.Domain.Infra.Data
+@using TaskList.Components.Domain.Main.Controllers
 @using TaskList.Components.Domain.Main.DTOs
 @using TaskList.Components.Domain.Main.Entities
 @using TaskList.Components.Domain.Main.ValueObjects
+@using Microsoft.EntityFrameworkCore
+@inject AppDbContext Context
 @inject HttpClient Http
 
 
 <h3>Criar Usuário</h3>
 
-<EditForm Model="@model" OnSubmit="@HandleSubmit" FormName="createUserForm">
+<EditForm Model="model" OnSubmit="HandleSubmit" FormName="createUserForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -27,19 +31,30 @@
     <button class="btn btn-success" type="submit">Criar Usuário</button>
 </EditForm>
 
-<p>Nome: @model.Name</p>
-<p>Email: @model.Email</p>
-<p>Senha: @model.Password</p>
+<p>Nome: @name</p>
+<p>Email: @email</p>
+<p>Senha: @password</p>
 
 
 @code {
+    [SupplyParameterFromForm]
+    private RequestCreateUser model { get; set; } = new();
 
-    private RequestCreateUser model = new();
+   // protected override void OnInitialized() => model ??= new();
+
+    public string name = "vazio";
+    public string email = "vazio";
+    public string password= "vazio";
 
 
-    private async Task HandleSubmit()
+
+    private void HandleSubmit()
     {
-        var response = await Http.PostAsJsonAsync("https://localhost:7103/user/create", model);
-       
+        // var response = await Http.PostAsJsonAsync("https://localhost:7103/user/create", model);
+
+        name = model.Name;
+        email = model.Email;
+        password = model.Password;
+
     }
 }

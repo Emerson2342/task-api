@@ -27,7 +27,7 @@ namespace TaskList.Components.Domain.Extensions
             var serverVersion = new MySqlServerVersion(new Version(8, 0, 2));
 
 
-            builder.Services.AddDbContext<ApiDbContext>(
+            builder.Services.AddDbContext<AppDbContext>(
                 x => x.UseMySql(str, serverVersion));
         }
 
@@ -40,7 +40,7 @@ namespace TaskList.Components.Domain.Extensions
                     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 }).AddJwtBearer(x =>
                 {
-                    x.UseSecurityTokenValidators = true;//nova linha
+                    
                     x.RequireHttpsMetadata = false;
                     x.SaveToken = true;
                     x.TokenValidationParameters = new TokenValidationParameters
