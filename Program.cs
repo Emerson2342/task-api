@@ -16,7 +16,8 @@ builder.Services.AddScoped<IRepository, UserRepository>();
 builder.Services.AddTransient<EmailService>();
 
 
-builder.Services.AddHttpClient();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7103") });
+
 
 
 

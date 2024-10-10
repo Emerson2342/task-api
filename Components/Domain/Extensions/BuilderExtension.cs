@@ -27,7 +27,7 @@ namespace TaskList.Components.Domain.Extensions
             var serverVersion = new MySqlServerVersion(new Version(8, 0, 2));
 
 
-            builder.Services.AddDbContext<AppDbContext>(
+            builder.Services.AddDbContext<ApiDbContext>(
                 x => x.UseMySql(str, serverVersion));
         }
 

@@ -18,10 +18,10 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
 
         public async Task<Response> CreateUser(RequestCreateUser newUser)
         {
-            //var exists = await _repository.AnyAsync(newUser.Email);
+            var exists = await _repository.AnyAsync(newUser.Email);
 
-            //if (exists)
-            //    return new Response("Já existe uma conta com esse email", 401);
+            if (exists)
+                return new Response("Já existe uma conta com esse email", 401);
 
             Email userEmail;
             Password userPassword;

@@ -10,8 +10,8 @@ using TaskList.Components.Domain.Infra.Data;
 
 namespace TaskList.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ApiDbContext))]
+    partial class ApiDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

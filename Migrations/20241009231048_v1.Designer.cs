@@ -11,8 +11,8 @@ using TaskList.Components.Domain.Infra.Data;
 
 namespace TaskList.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
-    [Migration("20241009122031_v1")]
+    [DbContext(typeof(ApiDbContext))]
+    [Migration("20241009231048_v1")]
     partial class v1
     {
         /// <inheritdoc />

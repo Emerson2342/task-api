@@ -1,47 +1,51 @@
-﻿using TaskList.Components.Domain.Main.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using TaskList.Components.Domain.Infra.Data;
+using TaskList.Components.Domain.Main.Entities;
 
 namespace TaskList.Components.Domain.Main.UseCases.Contracts
 {
     public class UserRepository : IRepository
     {
-        public Task<bool> AnyAsync(string email)
+        private readonly ApiDbContext _context;
+
+        public UserRepository(ApiDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task<bool> AnyAsync(string email)
+        {
+            return await _context.Users.AnyAsync(x=>x.Email.Address == email);
         }
 
-        public Task<User> GetUserByEmailAsync(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(user => user.Email.Address == email);
         }
 
-        public Task<User> GetUserByIdAsync(string id)
+        public async Task<User> GetUserByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id);
         }
 
-        public Task<User> GetUserByPartialTokenAsync(string partialToken)
+        public async Task<User> GetUserByTokenAsync(string token)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(x => x.PartialToken == token);
         }
 
-        public Task<User> GetUserByTokenAsync(string id)
+        public async Task SaveChangesAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveChangesAsync()
-        {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
 
         public void UpdateUser(User user)
         {
-            throw new NotImplementedException();
+            _context.Users.Update(user);
+        }
+
+        public async Task SaveAsync(User user)
+        {
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
         }
     }
 }

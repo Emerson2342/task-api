@@ -15,18 +15,10 @@ namespace TaskList.Components.Domain.Main.Controllers
             _handler = handler;
         }
 
-        [HttpPost("/create")]
-        public async Task<IActionResult> CreateUser([FromBody] RequestCreateUser newUser)
-        {
-            var result = await _handler.CreateUser(newUser);
-
-            return Ok(result);
-        }
         [HttpGet("/v1")]
         public IActionResult Get()
         {
           
-
             return Ok("result");
         }
     }
