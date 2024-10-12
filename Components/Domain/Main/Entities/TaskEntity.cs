@@ -16,8 +16,8 @@ namespace TaskList.Components.Domain.Main.Entities
 
         public TaskEntity(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
         {
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(description))
-                throw new Exception("Favor preencher todos os campos!");
+            //if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(description))
+            //    throw new Exception("Favor preencher todos os campos!");
 
             if (deadline <= DateTime.UtcNow)
                 throw new Exception("Prazo final incorreto!");

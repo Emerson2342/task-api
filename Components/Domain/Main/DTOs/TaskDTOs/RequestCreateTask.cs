@@ -22,7 +22,7 @@ namespace TaskList.Components.Domain.Main.DTOs.TaskDTOs
 
         [Required(ErrorMessage = "Favor preencher o campo TÉRMINO DA TAREFA")]
         [SwaggerSchema("Data do término da tarefa.")]
-        public DateTime Dedadline { get; set; }
+        public DateTime Deadline { get; set; }
 
     }
 }
