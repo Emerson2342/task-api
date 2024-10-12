@@ -12,7 +12,7 @@ using TaskList.Components.Domain.Infra.Data;
 namespace TaskList.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241010134556_v1")]
+    [Migration("20241012172041_v1")]
     partial class v1
     {
         /// <inheritdoc />

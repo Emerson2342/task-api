@@ -3,6 +3,7 @@
 @using TaskList.Components.Domain.Main.Controllers
 @using TaskList.Components.Domain.Main.DTOs
 @using TaskList.Components.Domain.Main.Entities
+@using TaskList.Components.Domain.Main.UseCases.ResponseCase
 @using TaskList.Components.Domain.Main.ValueObjects
 @using Microsoft.EntityFrameworkCore
 @inject AppDbContext Context
@@ -13,48 +14,59 @@
 
 <EditForm Model="model" OnSubmit="HandleSubmit" FormName="createUserForm">
     <DataAnnotationsValidator />
-    <ValidationSummary />
+    <ValidationSummary />  
 
     <div class="mb-1">
         <label for="Name" class="form-label">Nome</label>
         <InputText class="form-control" id="Name" @bind-Value="model.Name" />
+        <ValidationMessage For="@(() => model.Name)" />
     </div>
     <div class="mb-3">
         <label for="Email" class="form-label">Email</label>
         <InputText class="form-control" type="email" id="Email" @bind-Value="model.Email" />
+        <ValidationMessage For="@(() => model.Email)" />
     </div>
     <div class="mb-3">
         <label for="Password" class="form-label">Senha</label>
         <InputText class="form-control" type="password" id="Password" @bind-Value="model.Password" />
+        <ValidationMessage For="@(() => model.Password)" />
     </div>
 
     <button class="btn btn-success" type="submit">Criar Usuário</button>
 </EditForm>
 
-<p>Nome: @name</p>
-<p>Email: @email</p>
-<p>Senha: @password</p>
 
+@if(!string.IsNullOrEmpty(responseMessage))
+{<div class="alert alert-info mt-3">
+    @responseMessage
+</div>}
 
 @code {
     [SupplyParameterFromForm]
     private RequestCreateUser model { get; set; } = new();
 
-   // protected override void OnInitialized() => model ??= new();
+    // protected override void OnInitialized() => model ??= new();
 
-    public string name = "vazio";
-    public string email = "vazio";
-    public string password= "vazio";
+    // public string name = "vazio";
+    // public string email = "vazio";
+    // public string password= "vazio";
+
+    private string responseMessage;
 
 
 
-    private void HandleSubmit()
+    private async Task<Response> HandleSubmit()
     {
-        // var response = await Http.PostAsJsonAsync("https://localhost:7103/user/create", model);
+        var response = await Http.PostAsJsonAsync("https://localhost:7103/user/create", model);
 
-        name = model.Name;
-        email = model.Email;
-        password = model.Password;
+        var result = await response.Content.ReadFromJsonAsync<Response>();
+
+        responseMessage = result.Message;
+        model.Name = string.Empty;
+        model.Email = string.Empty;
+        model.Password = string.Empty;
+
+        return result;
 
     }
 }

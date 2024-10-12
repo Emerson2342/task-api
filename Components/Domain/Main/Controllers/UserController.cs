@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using TaskList.Components.Domain.Main.DTOs;
 using TaskList.Components.Domain.Main.UseCases.Create;
 
 namespace TaskList.Components.Domain.Main.Controllers
 {
+    [ApiController]
     [Route("user")]
     public class UserController : Controller
     {
@@ -15,6 +17,7 @@ namespace TaskList.Components.Domain.Main.Controllers
             _handler = handler;
         }
 
+        [SwaggerOperation(Summary = "Criar um novo usuário.", Description = "Cria um novo usuário no sistema.")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateUser([FromBody] RequestCreateUser newUser)
         {
@@ -22,6 +25,7 @@ namespace TaskList.Components.Domain.Main.Controllers
 
             return Ok(result);
         }
+        [SwaggerOperation(Summary = "Confirmar conta.", Description = "Confirma a conta de um usuário com o link enviado por email.")]
         [HttpGet("confirmation/{token}")]
         public async Task<IActionResult> Confirm([FromRoute] string token)
         {
@@ -30,8 +34,8 @@ namespace TaskList.Components.Domain.Main.Controllers
             return Ok(result);
         }
 
-       
 
+        [SwaggerOperation(Summary = "Alterar senha.", Description = "Altera a senha do usuário autenticado.")]
         [Authorize]
         [HttpPut("change-password-in")]
         public async Task<IActionResult> ChangePasswordLogged(
@@ -44,6 +48,7 @@ namespace TaskList.Components.Domain.Main.Controllers
 
             return Ok(result);
         }
+        [SwaggerOperation(Summary = "Recuperar senha.", Description = "Recupera senha do usuário não autenticado.")]
         [HttpPut("reset-password-out")]
         public async Task<IActionResult> ResetPasswordNotLogged([FromBody] RequestEmail email)
         {
@@ -51,6 +56,7 @@ namespace TaskList.Components.Domain.Main.Controllers
 
             return Ok(result);
         }
+        [SwaggerOperation(Summary = "Recadastrar senha.", Description = "Página para cadastrar uma nova senha.")]
         [HttpGet("reset-password/{token}")]
         public IActionResult ResetPasswordHtml([FromRoute] string token)
         {
@@ -76,6 +82,7 @@ namespace TaskList.Components.Domain.Main.Controllers
         }
 
         //endpoint from html forms
+        [SwaggerOperation(Summary = "Alterar senha.", Description = "Endpoint para executar a alteração de senha vinda da página HTML.")]
         [HttpPost("/user/reset-password")]
         public async Task<IActionResult> ResetPasswordHtmlPost(
             [FromForm] string password,

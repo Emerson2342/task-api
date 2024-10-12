@@ -5,7 +5,7 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
     {
         public ResponseData? ResponseData { get; set; }
 
-        protected Response() { }
+        public Response() { }
 
         //succesfull
         public Response(string massage, int status)
