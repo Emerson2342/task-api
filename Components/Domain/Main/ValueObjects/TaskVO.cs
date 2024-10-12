@@ -17,7 +17,7 @@ namespace TaskList.Components.Domain.Main.ValueObjects
                 throw new Exception("Favor preencher todos os campos!");
 
             if(deadline <= DateTime.UtcNow)
-                throw new Exception("Prazo final incorreto!");
+                throw new Exception("Prazo final incorsssssreto!");
             {
                 Title = title;
                 Description = description;

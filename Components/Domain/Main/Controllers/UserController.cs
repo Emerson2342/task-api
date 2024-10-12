@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using TaskList.Components.Domain.Main.DTOs;
+using TaskList.Components.Domain.Main.DTOs.UserDTOs;
 using TaskList.Components.Domain.Main.UseCases.Create;
 
 namespace TaskList.Components.Domain.Main.Controllers
@@ -10,9 +10,9 @@ namespace TaskList.Components.Domain.Main.Controllers
     [Route("user")]
     public class UserController : Controller
     {
-        private readonly Handler _handler;
+        private readonly UserHandler _handler;
 
-        public UserController(Handler handler)
+        public UserController(UserHandler handler)
         {
             _handler = handler;
         }

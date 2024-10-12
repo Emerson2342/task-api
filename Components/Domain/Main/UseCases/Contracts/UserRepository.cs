@@ -4,7 +4,7 @@ using TaskList.Components.Domain.Main.Entities;
 
 namespace TaskList.Components.Domain.Main.UseCases.Contracts
 {
-    public class UserRepository : IRepository
+    public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
 

@@ -14,7 +14,7 @@ namespace TaskList.Components.Domain.Main.Entities
 
         protected TaskEntity() { }
 
-        public TaskEntity(User user, string title, string description, DateTime startTime, DateTime deadline)
+        public TaskEntity(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
         {
             if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(description))
                 throw new Exception("Favor preencher todos os campos!");
@@ -22,15 +22,14 @@ namespace TaskList.Components.Domain.Main.Entities
             if (deadline <= DateTime.UtcNow)
                 throw new Exception("Prazo final incorreto!");
 
+            UserId = userId;
             Title = title;
             Description = description;
             Deadline = deadline;
-            User = user;
             Title = title;
             Description = description;
             StartTime = startTime;
             Deadline = deadline;
-            UserId = user.Id;
         }
     }
 }

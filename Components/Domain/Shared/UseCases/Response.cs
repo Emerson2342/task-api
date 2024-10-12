@@ -1,5 +1,4 @@
-﻿using Flunt.Notifications;
-
+﻿
 namespace TaskList.Components.Domain.Shared.UseCases
 {
     public abstract class Response

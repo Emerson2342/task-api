@@ -1,4 +1,4 @@
-﻿namespace TaskList.Components.Domain.Main.DTOs
+﻿namespace TaskList.Components.Domain.Main.DTOs.UserDTOs
 {
     public class RequestEmail
     {

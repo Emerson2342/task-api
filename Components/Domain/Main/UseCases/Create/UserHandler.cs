@@ -1,5 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using TaskList.Components.Domain.Main.DTOs;
+using TaskList.Components.Domain.Main.DTOs.UserDTOs;
 using TaskList.Components.Domain.Main.Entities;
 using TaskList.Components.Domain.Main.Services;
 using TaskList.Components.Domain.Main.UseCases.Contracts;
@@ -8,13 +8,12 @@ using TaskList.Components.Domain.Main.ValueObjects;
 
 namespace TaskList.Components.Domain.Main.UseCases.Create
 {
-    public class Handler
+    public class UserHandler
     {
-        private readonly IRepository _repository;
+        private readonly IUserRepository _repository;
         private readonly TokenService _tokenService;
-        private readonly string ipLocal = "192.168.10.10";
 
-        public Handler(IRepository repository, TokenService tokenService)
+        public UserHandler(IUserRepository repository, TokenService tokenService)
         {
             _repository = repository;
             _tokenService = tokenService;
@@ -50,7 +49,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 await _repository.SaveAsync(user);
 
                 return new Response("Usuário criado com sucesso!" +
-                    " Favor verificar seu email para confirmaçao de conta!", new ResponseData(newUser.Name, newUser.Email, null));
+                    " Favor verificar seu email para confirmaçao de conta!", new ResponseDataUser(newUser.Name, newUser.Email, null));
             }
             catch (Exception ex)
             {
@@ -73,7 +72,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             _repository.UpdateUser(user);
             await _repository.SaveChangesAsync();
 
-            return new Response("Email verificado, conta liberada para o acesso!", new ResponseData(user.Name, user.Email.Address, null));
+            return new Response("Email verificado, conta liberada para o acesso!", new ResponseDataUser(user.Name, user.Email.Address, null));
         }
         public async Task<Response> Login(RequestLogin login)
         {
@@ -87,7 +86,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
 
             var token = _tokenService.CreateToken(user);
 
-            return new Response("Login efetuado com sucesso!", new ResponseData(null, login.email, token));
+            return new Response("Login efetuado com sucesso!", new ResponseDataUser(null, login.email, token));
         }
         public async Task<Response> ChangePasswordLogged(string userToken, RequestPassword newPassword)
         {
@@ -109,7 +108,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             _repository.UpdateUser(user);
             await _repository.SaveChangesAsync();
 
-            return new Response($"Senha alterada com sucesso!", new ResponseData(null, user.Email.Address, null));
+            return new Response($"Senha alterada com sucesso!", new ResponseDataUser(null, user.Email.Address, null));
         }
 
         public async Task<Response> ResetPasswordNotLogged(RequestEmail requestEmail)
@@ -136,7 +135,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 "Recuperar Senha",
                 $"Clique no link para recuperar a senha\n{link}"
                 );
-            return new Response($"Email enviado com sucesso!", new ResponseData(null, user.Email.Address, null));
+            return new Response($"Email enviado com sucesso!", new ResponseDataUser(null, user.Email.Address, null));
         }
 
         public async Task<Response> ResetPassword(string token, string newPassword)
@@ -157,7 +156,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             _repository.UpdateUser(user);
             await _repository.SaveChangesAsync();
 
-            return new Response($"Senha alterada com sucesso!", new ResponseData(user.Name, user.Email.Address, null));
+            return new Response($"Senha alterada com sucesso!", new ResponseDataUser(user.Name, user.Email.Address, null));
         }
 
     }

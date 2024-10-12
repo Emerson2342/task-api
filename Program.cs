@@ -13,8 +13,10 @@ builder.AddSwaggerDocumentation();
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 builder.Services.AddTransient<TokenService>();
-builder.Services.AddScoped<Handler>();
-builder.Services.AddScoped<IRepository, UserRepository>();
+builder.Services.AddScoped<UserHandler>();
+builder.Services.AddScoped<TaskHandler>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddTransient<EmailService>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7103") });

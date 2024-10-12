@@ -2,7 +2,7 @@
 
 namespace TaskList.Components.Domain.Main.UseCases.Contracts
 {
-    public interface IRepository
+    public interface IUserRepository
     {
         Task<bool> AnyAsync(string email);
         Task SaveAsync(User user);
