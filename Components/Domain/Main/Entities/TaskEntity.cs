@@ -1,4 +1,5 @@
-﻿using TaskList.Components.Domain.Main.ValueObjects;
+﻿using TaskList.Components.Domain.Main.UseCases.ResponseCase;
+using TaskList.Components.Domain.Main.ValueObjects;
 using TaskList.Components.Domain.Shared.Entities;
 
 namespace TaskList.Components.Domain.Main.Entities
@@ -12,17 +13,11 @@ namespace TaskList.Components.Domain.Main.Entities
         public DateTime StartTime { get; set; }
         public DateTime Deadline { get; set; }
 
-        protected TaskEntity() { }
+        public TaskEntity() { }
 
-        public TaskEntity(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
+        private TaskEntity(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
         {
-            //if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(description))
-            //    throw new Exception("Favor preencher todos os campos!");
-
-            if (deadline <= DateTime.UtcNow)
-                throw new Exception("Prazo final incorreto!");
-
-            UserId = userId;
+                        UserId = userId;
             Title = title;
             Description = description;
             Deadline = deadline;
@@ -31,5 +26,32 @@ namespace TaskList.Components.Domain.Main.Entities
             StartTime = startTime;
             Deadline = deadline;
         }
+
+        public static TaskResult With(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
+        {
+            if (string.IsNullOrEmpty(title))return new TaskResult(new Response ("Favor preencher o título", 400), null);
+
+            if (string.IsNullOrEmpty(description))return new TaskResult(new Response("Favor preencher a descrição da atividade", 400),null);
+            if (startTime > DateTime.UtcNow) return new TaskResult(new Response("Data inicial inválida", 400), null);
+            if (deadline < DateTime.UtcNow) return new TaskResult(new Response("Data final da atividade inválida!", 400), null);
+
+            TaskEntity task = new TaskEntity(userId, title, description, startTime, deadline);
+
+            return new TaskResult(new Response("Atividade adicionada com sucesso!", task),task );
+                        
+        }
+        public class TaskResult
+        {
+            public Response Response { get; set; }
+            public TaskEntity TaskEntity { get; set; }
+
+            public TaskResult(Response response, TaskEntity taskEntity)
+            {
+                Response = response;
+                TaskEntity = taskEntity;
+            }
+        }
     }
+
+    
 }

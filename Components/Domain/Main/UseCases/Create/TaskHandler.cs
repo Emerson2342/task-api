@@ -21,14 +21,16 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             if (exists)
                 return new Response("Já existe uma tarefa com esse nome", 401);
 
-           // if(string.IsNullOrEmpty(new) || string.IsNullOrEmpty(description))
-
             try
             {
-                TaskEntity task = new(newTask.UserId, newTask.Title, newTask.Description, newTask.StartTime, newTask.Deadline);
-                await _repository.SaveAsync(task);
-                return new Response("Tarefa criada com sucesso!", new ResponseDataTask(task.Title, task.StartTime, task.Deadline));
+                var taskResult = TaskEntity.With(newTask.UserId, newTask.Title, newTask.Description, newTask.StartTime, newTask.Deadline);
+
+                await _repository.SaveAsync(taskResult.TaskEntity);
+                return taskResult.Response;
+
+                
             }
+
             catch (Exception ex)
             {
                 return new Response($"Não foi possível criar uma nova tarefa. {ex.Message}", 500);

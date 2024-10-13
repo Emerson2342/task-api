@@ -49,7 +49,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 await _repository.SaveAsync(user);
 
                 return new Response("Usuário criado com sucesso!" +
-                    " Favor verificar seu email para confirmaçao de conta!", new ResponseDataUser(newUser.Name, newUser.Email, null));
+                    " Favor verificar seu email para confirmaçao de conta!", 201);
             }
             catch (Exception ex)
             {
@@ -72,7 +72,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             _repository.UpdateUser(user);
             await _repository.SaveChangesAsync();
 
-            return new Response("Email verificado, conta liberada para o acesso!", new ResponseDataUser(user.Name, user.Email.Address, null));
+            return new Response("Email verificado, conta liberada para o acesso!", 201);
         }
         public async Task<Response> Login(RequestLogin login)
         {
@@ -86,7 +86,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
 
             var token = _tokenService.CreateToken(user);
 
-            return new Response("Login efetuado com sucesso!", new ResponseDataUser(null, login.email, token));
+            return new Response("Login efetuado com sucesso!", 201);
         }
         public async Task<Response> ChangePasswordLogged(string userToken, RequestPassword newPassword)
         {
@@ -108,7 +108,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             _repository.UpdateUser(user);
             await _repository.SaveChangesAsync();
 
-            return new Response($"Senha alterada com sucesso!", new ResponseDataUser(null, user.Email.Address, null));
+            return new Response($"Senha alterada com sucesso!", 201);
         }
 
         public async Task<Response> ResetPasswordNotLogged(RequestEmail requestEmail)
@@ -135,7 +135,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 "Recuperar Senha",
                 $"Clique no link para recuperar a senha\n{link}"
                 );
-            return new Response($"Email enviado com sucesso!", new ResponseDataUser(null, user.Email.Address, null));
+            return new Response($"Email enviado com sucesso!", 201);
         }
 
         public async Task<Response> ResetPassword(string token, string newPassword)
@@ -156,7 +156,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             _repository.UpdateUser(user);
             await _repository.SaveChangesAsync();
 
-            return new Response($"Senha alterada com sucesso!", new ResponseDataUser(user.Name, user.Email.Address, null));
+            return new Response($"Senha alterada com sucesso!", 201);
         }
 
     }
