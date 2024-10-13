@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskList.Components.Domain.Infra.Data;
+using TaskList.Components.Domain.Main.DTOs.TaskDTOs;
 using TaskList.Components.Domain.Main.Entities;
 
 namespace TaskList.Components.Domain.Main.UseCases.Contracts
@@ -14,13 +15,18 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
         }
 
         public async Task<bool> AnyTaskByTitleAsync(string title)
-        { 
-        return await _context.Tasks.AnyAsync(task => task.Title == title);
+        {
+            return await _context.Tasks.AnyAsync(task => task.Title == title);
+        }
+
+        public async Task<bool> AnyTaskByIdAsync(Guid id)
+        {
+            return await _context.Tasks.AnyAsync(task => task.Id == id);
         }
 
         public async Task<TaskEntity> GetTaskById(Guid id)
         {
-            return await _context.Tasks.FirstOrDefaultAsync(task => task.UserId == id);
+            return await _context.Tasks.FirstOrDefaultAsync(task => task.Id == id);
         }
 
         public async Task<TaskEntity> GetTaskByTitle(string title)
@@ -33,5 +39,19 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateAsync(TaskEntity task)
+        {
+            _context.Tasks.Update(task);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteTaskAsync(TaskEntity task)
+        {
+            _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 }

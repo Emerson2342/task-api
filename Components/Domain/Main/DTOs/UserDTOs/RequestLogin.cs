@@ -1,6 +1,8 @@
 ﻿namespace TaskList.Components.Domain.Main.DTOs.UserDTOs
 {
-    public record RequestLogin(string email, string password)
+    public class RequestLogin
     {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }

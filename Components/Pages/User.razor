@@ -54,8 +54,6 @@
 
     private string responseMessage;
 
-
-
     private async Task<Response> HandleSubmit()
     {
         var response = await Http.PostAsJsonAsync("https://localhost:7103/user/create", model);

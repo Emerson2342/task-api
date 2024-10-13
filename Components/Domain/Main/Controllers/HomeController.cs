@@ -17,7 +17,7 @@ namespace TaskList.Components.Domain.Main.Controllers
         }
 
         [SwaggerOperation(Summary = "Entrar na conta.", Description = "Entra na conta com o login e senha cadastrados.")]
-        [HttpGet("/login")]
+        [HttpPost("/login")]
         public async Task<IActionResult> Login([FromBody] RequestLogin login)
         {
             var result = await _handler.Login(login);

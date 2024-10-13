@@ -1,5 +1,54 @@
 ﻿@page "/home"
+@using TaskList.Components.Domain.Infra.Data
+@using TaskList.Components.Domain.Main.DTOs.UserDTOs
+@using TaskList.Components.Domain.Main.UseCases.ResponseCase
+
+@inject AppDbContext Context
+@inject HttpClient Http
 
 <PageTitle>Página Inicial</PageTitle>
 
-<h1>Lista de tarefas!</h1>
+<h1>Login</h1>
+
+
+<EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskForm">
+    <div class="mb-1">
+        <label for="Login" class="form-label">Email</label>
+        <InputText class="form-control"  id="email" @bind-Value="model.Email" />
+    </div>
+
+    <div class="mb-1">
+    <label for="Password" class="form-label">Senha</label>
+    <InputText class="form-control"  id="Title" @bind-Value="model.Password" />
+    </div>
+
+    <button class="btn btn-success" type="submit">Entrar</button>
+
+</EditForm>
+
+@if (!string.IsNullOrEmpty(responseMessage))
+{
+    <div class="alert alert-info mt-3">
+        @responseMessage
+    </div>
+}
+
+@code{
+    [SupplyParameterFromForm]
+    private RequestLogin model { get; set; } = new();
+
+
+    private string responseMessage;
+
+    private async Task<Response> HandleSubmit()
+    {
+       
+            var response = await Http.PostAsJsonAsync("https://localhost:7103/login", model);
+            var result = await response.Content.ReadFromJsonAsync<Response>();
+            responseMessage = result.Message;
+
+            return result;
+
+
+    }
+}

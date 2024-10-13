@@ -1,7 +1,9 @@
-﻿using TaskList.Components.Domain.Main.DTOs.TaskDTOs;
+﻿using System.Threading.Tasks;
+using TaskList.Components.Domain.Main.DTOs.TaskDTOs;
 using TaskList.Components.Domain.Main.Entities;
 using TaskList.Components.Domain.Main.UseCases.Contracts;
 using TaskList.Components.Domain.Main.UseCases.ResponseCase;
+using static TaskList.Components.Domain.Main.Entities.TaskEntity;
 
 namespace TaskList.Components.Domain.Main.UseCases.Create
 {
@@ -14,37 +16,50 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             _repository = repository;
         }
 
-        public async Task<Response> CreateTask(RequestCreateTask newTask)
+        public async Task<Response> CreateTask(RequestTask newTask)
         {
             var exists = await _repository.AnyTaskByTitleAsync(newTask.Title);
 
             if (exists)
                 return new Response("Já existe uma tarefa com esse nome", 401);
 
-            try
-            {
-                var taskResult = TaskEntity.With(newTask.UserId, newTask.Title, newTask.Description, newTask.StartTime, newTask.Deadline);
+            var taskResult = TaskEntity.With(newTask.UserId, newTask.Title, newTask.Description, newTask.StartTime.Value, newTask.Deadline.Value);
 
-                await _repository.SaveAsync(taskResult.TaskEntity);
+            //in case null object from taskResult
+            if (taskResult.TaskEntity == null)
                 return taskResult.Response;
 
-                
-            }
-
-            catch (Exception ex)
-            {
-                return new Response($"Não foi possível criar uma nova tarefa. {ex.Message}", 500);
-            }
-
+            await _repository.SaveAsync(taskResult.TaskEntity);
+            return taskResult.Response;
         }
 
-        public async Task<Response> EditTask(RequestCreateTask newTask)
+        public async Task<Response> EditTask(RequestTask taskToEdit)
         {
-            return null;
+            var exists = await _repository.AnyTaskByIdAsync(taskToEdit.Id);
+
+           // return new Response($"Tarefa editada com sucesso! {exists}", 201);
+
+            if (!exists) return new Response("Tarefa não encontrada!", 400);
+
+            var originalTask = await _repository.GetTaskById(taskToEdit.Id);
+           // return new Response($"Tarefa editada com sucesso! {originalTask.ToString}", 201);
+
+            var task = TaskEntity.Edit(originalTask, taskToEdit);
+
+            await _repository.UpdateAsync(task);
+
+            return new Response("Tarefa editada com sucesso!", 201);
         }
-        public async Task<Response> DeleteTask(RequestCreateTask newTask)
+        public async Task<Response> DeleteTask(Guid id)
         {
-            return null;
+            var exists = await _repository.AnyTaskByIdAsync(id);
+            if (!exists) return new Response("Tarefa não encontrada!", 400);
+
+            var task = await _repository.GetTaskById(id);
+
+            await _repository.DeleteTaskAsync(task);
+
+            return new Response("Tarefa removida com sucesso!", 201);
         }
     }
 }

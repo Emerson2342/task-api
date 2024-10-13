@@ -76,17 +76,17 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
         }
         public async Task<Response> Login(RequestLogin login)
         {
-            var user = await _repository.GetUserByEmailAsync(login.email);
+            var user = await _repository.GetUserByEmailAsync(login.Email);
 
-            if (user == null || !Password.Verify(user.Password.PassWord, login.password))
+            if (user == null || !Password.Verify(user.Password.PassWord, login.Password))
                 return new Response($"Usuário e/ou senha estão incorretos", 400);
 
-            if (!user.IsEmailConfirmed)
+            if (user.IsEmailConfirmed)
                 return new Response($"Email não confirmado, favor confirmar o email!", 400);
 
             var token = _tokenService.CreateToken(user);
 
-            return new Response("Login efetuado com sucesso!", 201);
+            return new Response("Login efetuado com sucesso!", token);
         }
         public async Task<Response> ChangePasswordLogged(string userToken, RequestPassword newPassword)
         {
