@@ -1,22 +1,18 @@
 ﻿@page "/create-task"
-@using TaskList.Components.Domain.Infra.Data
-@using TaskList.Components.Domain.Main.DTOs.TaskDTOs
-@using TaskList.Components.Domain.Main.UseCases.ResponseCase
+@using global::TaskList.Components.Domain.Infra.Data
+@using global::TaskList.Components.Domain.Main.DTOs.TaskDTOs
+@using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
+
 
 
 @inject AppDbContext Context
 @inject HttpClient Http
 
-<h3>Task</h3>
+<h3>Criar nova tarefa</h3>
 
 <EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
-
-    @* <div class="mb-2">
-        <label for="UserId" class="form-label">Id</label>
-        <InputText class="form-control" id="UserId" @bind-Value="model.UserId" />
-    </div> *@
 
     <div class="mb-1">
         <label for="Title" class="form-label">Título</label>
@@ -54,12 +50,12 @@
     private RequestTask model { get; set; } = new();
 
 
-    private string responseMessage;
+    private string? responseMessage;
 
     private async Task<Response> HandleSubmit()
     {
-        model.UserId = Guid.Parse("8e67c3a4-13a4-4263-9c04-630e2253c022");
-        var response = await Http.PostAsJsonAsync("https://localhost:7103/task/create", model);
+        model.UserId = Guid.Parse("74cbaa7e-d038-469d-a786-04bcc110ef3f");
+        var response = await Http.PostAsJsonAsync("task/create", model);
 
         if (model.StartTime == null || model.Deadline == null)
         {

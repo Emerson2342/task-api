@@ -52,6 +52,11 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<TaskEntity>> ListTasks()
+        {
+            return await _context.Tasks.ToListAsync();
+        }
+
 
     }
 }

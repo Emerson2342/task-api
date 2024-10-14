@@ -11,6 +11,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
         Task SaveAsync(TaskEntity task);
         Task UpdateAsync(TaskEntity task);
         Task DeleteTaskAsync(TaskEntity task);
+        Task<List<TaskEntity>> ListTasks();
 
 
     }

@@ -52,11 +52,11 @@
     // public string email = "vazio";
     // public string password= "vazio";
 
-    private string responseMessage;
+    private string? responseMessage;
 
     private async Task<Response> HandleSubmit()
     {
-        var response = await Http.PostAsJsonAsync("https://localhost:7103/user/create", model);
+        var response = await Http.PostAsJsonAsync("user/create", model);
 
         var result = await response.Content.ReadFromJsonAsync<Response>();
 

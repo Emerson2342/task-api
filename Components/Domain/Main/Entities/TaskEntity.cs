@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using System.Text.Json.Serialization;
 using TaskList.Components.Domain.Main.DTOs.TaskDTOs;
 using TaskList.Components.Domain.Main.UseCases.ResponseCase;
 using TaskList.Components.Domain.Main.ValueObjects;
@@ -8,15 +9,21 @@ namespace TaskList.Components.Domain.Main.Entities
 {
     public class TaskEntity : Entity
     {
+        [JsonPropertyName("userId")]
         public Guid UserId { get; set; }
+        [JsonPropertyName("user")]
         public User User { get; set; }
+        [JsonPropertyName("title")]
         public string Title { get; set; }
+        [JsonPropertyName("description")]
         public string Description { get; set; }
+        [JsonPropertyName("startTime")]
         public DateTime StartTime { get; set; }
+        [JsonPropertyName("deadLine")]
         public DateTime Deadline { get; set; }
 
-        public TaskEntity() { }
-
+        private TaskEntity() { }
+        [JsonConstructor]
         private TaskEntity(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
         {
             UserId = userId;
@@ -56,11 +63,28 @@ namespace TaskList.Components.Domain.Main.Entities
         {
             public Response Response { get; set; }
             public TaskEntity TaskEntity { get; set; }
+           
 
             public TaskResult(Response response, TaskEntity taskEntity)
             {
                 Response = response;
                 TaskEntity = taskEntity;
+            }
+                      
+        }
+
+        public class TasksResult
+        {
+            [JsonPropertyName("response")]
+            public Response Response { get; set; }
+            [JsonPropertyName("taskEntities")]
+            public List<TaskEntity> TaskEntities { get; set; }
+
+          
+            public TasksResult(Response response, List<TaskEntity> tasksEntities)
+            {
+                Response = response;
+                TaskEntities = tasksEntities;
             }
         }
     }

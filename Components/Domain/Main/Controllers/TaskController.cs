@@ -46,5 +46,15 @@ namespace TaskList.Components.Domain.Main.Controllers
 
         }
 
+        [SwaggerOperation(Summary = "Listar tarefas.", Description = "Endpoint para listas todas as tarefas")]
+        [HttpGet("list")]
+        public async Task<IActionResult> ListTask()
+        {
+            var result = await _handler.ListTask();
+
+            return Ok(result);
+
+        }
+
     }
 }

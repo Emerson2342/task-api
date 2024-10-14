@@ -7,6 +7,7 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
     {
         public User? ResponseDataUser { get; set; }
         public TaskEntity? ResponseDataTask { get; set; }
+        public List<TaskEntity>? TasksList { get; set; }
         public string? Token { get; set; }
 
         public Response() { }
@@ -36,6 +37,12 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
             Message = message;
             Status = 201;
             ResponseDataTask = responseData;
+        }
+        public Response(string message, List<TaskEntity> tasksList)
+        {
+            Message = message;
+            Status = 201;
+            TasksList = tasksList;
         }
 
     }

@@ -81,7 +81,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             if (user == null || !Password.Verify(user.Password.PassWord, login.Password))
                 return new Response($"Usuário e/ou senha estão incorretos", 400);
 
-            if (user.IsEmailConfirmed)
+            if (!user.IsEmailConfirmed)
                 return new Response($"Email não confirmado, favor confirmar o email!", 400);
 
             var token = _tokenService.CreateToken(user);

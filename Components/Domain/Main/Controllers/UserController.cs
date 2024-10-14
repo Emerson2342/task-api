@@ -37,7 +37,7 @@ namespace TaskList.Components.Domain.Main.Controllers
 
         [SwaggerOperation(Summary = "Alterar senha.", Description = "Altera a senha do usuário autenticado.")]
         [Authorize]
-        [HttpPut("change-password-in")]
+        [HttpPost("change-password-in")]
         public async Task<IActionResult> ChangePasswordLogged(
             [FromHeader] string Authorization,
             [FromBody] RequestPassword newPassword
@@ -49,7 +49,7 @@ namespace TaskList.Components.Domain.Main.Controllers
             return Ok(result);
         }
         [SwaggerOperation(Summary = "Recuperar senha.", Description = "Recupera senha do usuário não autenticado.")]
-        [HttpPut("reset-password-out")]
+        [HttpPost("reset-password-out")]
         public async Task<IActionResult> ResetPasswordNotLogged([FromBody] RequestEmail email)
         {
             var result = await _handler.ResetPasswordNotLogged(email);

@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TaskList.Components.Domain.Main.DTOs.TaskDTOs;
 using TaskList.Components.Domain.Main.Entities;
 using TaskList.Components.Domain.Main.UseCases.Contracts;
 using TaskList.Components.Domain.Main.UseCases.ResponseCase;
+using TaskList.Components.Domain.Main.ValueObjects;
 using static TaskList.Components.Domain.Main.Entities.TaskEntity;
 
 namespace TaskList.Components.Domain.Main.UseCases.Create
@@ -37,12 +39,12 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
         {
             var exists = await _repository.AnyTaskByIdAsync(taskToEdit.Id);
 
-           // return new Response($"Tarefa editada com sucesso! {exists}", 201);
+            // return new Response($"Tarefa editada com sucesso! {exists}", 201);
 
             if (!exists) return new Response("Tarefa não encontrada!", 400);
 
             var originalTask = await _repository.GetTaskById(taskToEdit.Id);
-           // return new Response($"Tarefa editada com sucesso! {originalTask.ToString}", 201);
+            // return new Response($"Tarefa editada com sucesso! {originalTask.ToString}", 201);
 
             var task = TaskEntity.Edit(originalTask, taskToEdit);
 
@@ -60,6 +62,19 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             await _repository.DeleteTaskAsync(task);
 
             return new Response("Tarefa removida com sucesso!", 201);
+        }
+
+        public async Task<Response> ListTask()
+        {
+            try
+            {
+                 List<TaskEntity> tasks= await _repository.ListTasks();
+                return new Response("Atividade listadas com sucess!", tasks);
+            }
+            catch  {
+                return new Response("Erro ao listar as atividades!", 500);
+            }
+            
         }
     }
 }

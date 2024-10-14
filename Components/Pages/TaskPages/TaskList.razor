@@ -1,0 +1,68 @@
+﻿@page "/task-list"
+@using Microsoft.EntityFrameworkCore
+@using global::TaskList.Components.Domain.Infra.Data
+@using global::TaskList.Components.Domain.Main.Entities
+@using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
+@using static global::TaskList.Components.Domain.Main.Entities.TaskEntity
+
+@inject AppDbContext Context
+@inject HttpClient Http
+
+
+<h3>Lista de Tarefas</h3>
+
+<table>
+    <thead>
+        <tr>
+            <td>Ord</td>
+            <td>Nome</td>
+            <td>Descrição</td>
+            <td>Início</td>
+            <td>Término</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in _tasks)
+            
+        {
+            <tr>@count ++</tr>
+            <tr>@task.Title</tr>
+            <tr>@task.Description</tr>
+            <tr>@task.StartTime</tr>
+            <tr>@task.Deadline</tr>
+        }
+    </tbody>
+</table>
+
+@if (!string.IsNullOrEmpty(responseMessage))
+{
+    <div class="alert alert-info mt-3">
+        @responseMessage
+    </div>
+}
+@code {
+
+
+    List<TaskEntity> _tasks = new();
+    int count = 1;
+
+    string responseMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var response = await Http.GetFromJsonAsync<Response>("task/list");
+            responseMessage = response.Message;
+            _tasks = response.TasksList;
+        }catch(Exception ex)
+        {
+            responseMessage = ex.Message;
+        }
+
+
+    }  
+
+
+
+}
