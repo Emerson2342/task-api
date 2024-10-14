@@ -1,7 +1,9 @@
 ﻿@page "/task-list"
+
 @using Microsoft.EntityFrameworkCore
 @using global::TaskList.Components.Domain.Infra.Data
 @using global::TaskList.Components.Domain.Main.Entities
+@using global::TaskList.Components.Domain.Main.Services
 @using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
 @using static global::TaskList.Components.Domain.Main.Entities.TaskEntity
 
@@ -23,7 +25,7 @@
     </thead>
     <tbody>
         @foreach (var task in _tasks)
-            
+
         {
             <tr>@count ++</tr>
             <tr>@task.Title</tr>
@@ -38,6 +40,7 @@
 {
     <div class="alert alert-info mt-3">
         @responseMessage
+        Token: @token
     </div>
 }
 @code {
@@ -47,6 +50,7 @@
     int count = 1;
 
     string responseMessage = string.Empty;
+    string token = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,13 +59,14 @@
             var response = await Http.GetFromJsonAsync<Response>("task/list");
             responseMessage = response.Message;
             _tasks = response.TasksList;
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             responseMessage = ex.Message;
         }
 
 
-    }  
+    }
 
 
 

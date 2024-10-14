@@ -50,7 +50,7 @@
     private async Task<Response> HandleSubmit()
     {
        
-            var response = await Http.PostAsJsonAsync("https://localhost:7103/login", model);
+            var response = await Http.PostAsJsonAsync("login", model);
             var result = await response.Content.ReadFromJsonAsync<Response>();
             responseMessage = result.Message;
 

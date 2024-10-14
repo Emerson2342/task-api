@@ -41,7 +41,7 @@ namespace TaskList.Components.Domain.Extensions
                     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 }).AddJwtBearer(x =>
                 {
-                    
+
                     x.RequireHttpsMetadata = false;
                     x.SaveToken = true;
                     x.TokenValidationParameters = new TokenValidationParameters
@@ -66,8 +66,33 @@ namespace TaskList.Components.Domain.Extensions
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Lista de Tarefas", Version = "v1" });
-                c.EnableAnnotations(); 
-                
+                c.EnableAnnotations();
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authentication",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header usando o esquema Bearer."
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                {
+                     new OpenApiSecurityScheme
+                {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+
             });
         }
     }
