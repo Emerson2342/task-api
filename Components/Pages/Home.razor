@@ -5,6 +5,7 @@
 
 @inject AppDbContext Context
 @inject HttpClient Http
+@inject Authenticationservice Authenticationservice
 
 <PageTitle>Página Inicial</PageTitle>
 
@@ -49,9 +50,8 @@
 
     private async Task<Response> HandleSubmit()
     {
-       
-            var response = await Http.PostAsJsonAsync("login", model);
-            var result = await response.Content.ReadFromJsonAsync<Response>();
+
+        var result = await Authenticationservice.Login(model);
             responseMessage = result.Message;
 
             return result;

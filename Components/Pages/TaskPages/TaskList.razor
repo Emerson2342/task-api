@@ -1,6 +1,7 @@
 ﻿@page "/task-list"
 
 @using Microsoft.EntityFrameworkCore
+@using System.Net.Http.Headers
 @using global::TaskList.Components.Domain.Infra.Data
 @using global::TaskList.Components.Domain.Main.Entities
 @using global::TaskList.Components.Domain.Main.Services
@@ -9,10 +10,22 @@
 
 @inject AppDbContext Context
 @inject HttpClient Http
+@inject Authenticationservice Authenticationservice
+
+@if (string.IsNullOrEmpty(token))
+{
+    <p>Acesso restrito</p>
+
+    <NavLink href="/home" class="btn btn-primary">Login</NavLink>
+
+    <button @onclick="LoadToken">Definir Token</button>
+}
 
 
+else
+{
 <h3>Lista de Tarefas</h3>
-
+    <p> Token @token</p>
 <table class="table">
     <thead>
         <tr>
@@ -42,35 +55,60 @@
 @if (!string.IsNullOrEmpty(responseMessage))
 {
     <div class="alert alert-info mt-3">
-        @responseMessage
-        Token: @token
+    @responseMessage
     </div>
 }
-@code {
+}
 
+
+
+@code {
     int count = 1;
     List<TaskEntity> _tasks = new();
-    
 
     string responseMessage = string.Empty;
     string token = string.Empty;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            token = await Authenticationservice.GetTokenAsync();
+            if (string.IsNullOrEmpty(token))
+            {
+                responseMessage = "Você precisa estar logado para acessar esta página";
+                return;
+            }
+            await LoadTasks();
+        }
+        StateHasChanged();
+    }
+
+    private async Task LoadTasks()
     {
         try
         {
-            var response = await Http.GetFromJsonAsync<Response>("task/list");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, "task/list");
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+
+            var response = await Http.SendAsync(requestMessage);
+            var result = await response.Content.ReadFromJsonAsync<Response>();
+
+
             //responseMessage = response.Message;
-            _tasks = response.TasksList;
+            _tasks = result.TasksList;
         }
         catch (Exception ex)
         {
             responseMessage = ex.Message;
         }
-
-
     }
 
-
+    private async Task LoadToken()
+    {
+        await Authenticationservice.LoadToken();
+    }
 
 }

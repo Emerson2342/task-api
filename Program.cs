@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using TaskList.Components;
 using TaskList.Components.Domain.Extensions;
 using TaskList.Components.Domain.Main.Services;
@@ -17,7 +18,10 @@ builder.Services.AddScoped<UserHandler>();
 builder.Services.AddScoped<TaskHandler>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<Authenticationservice>();
 builder.Services.AddTransient<EmailService>();
+builder.Services.AddBlazoredLocalStorage();
+
 
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7103/") });
