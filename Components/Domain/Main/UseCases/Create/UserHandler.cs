@@ -58,7 +58,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
         }
         public async Task<Response> ConfirmEmail(string token)
         {
-            var user = await _repository.GetUserByDynamicTokenAsync(token);
+            var user = await _repository.GetUserByTokenFromRouteAsync(token);
 
             if (user == null)
                 return new Response($"Token inválido!", 400);
@@ -123,9 +123,9 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             _repository.UpdateUser(user);
             await _repository.SaveChangesAsync();
 
-            string link = $"<a href='https://localhost:7103/user/reset-password/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
+            string link = $"<a href='https://localhost:7103/reset-password/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
                     $"<br>Se preferir, cole isso no seu navegador <br> " +
-                    $"https://localhost:7103/user/reset-password/{user.Token}";
+                    $"https://localhost:7103/reset-password/{user.Token}";
 
             EmailService email = new();
 
@@ -140,7 +140,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
 
         public async Task<Response> ResetPassword(string token, string newPassword)
         {
-            var user = await _repository.GetUserByDynamicTokenAsync(token);
+            var user = await _repository.GetUserByTokenFromRouteAsync(token);
 
             if (user == null)
                 return new Response($"Token inválido!", 400);

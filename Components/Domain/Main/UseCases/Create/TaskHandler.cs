@@ -76,5 +76,19 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             }
             
         }
+
+        public async Task<Response> GetTask(Guid id)
+        {
+            try
+            {
+                var task = await _repository.GetTaskById(id);
+                return new Response("Tarefa encontrada!", task);
+            }
+            catch
+            {
+                return new Response("Erro ao buscar tarefa!", 500);
+            }
+
+        }
     }
 }

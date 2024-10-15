@@ -13,7 +13,7 @@
 
 <h3>Lista de Tarefas</h3>
 
-<table>
+<table class="table">
     <thead>
         <tr>
             <td>Ord</td>
@@ -24,14 +24,17 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var task in _tasks)
 
+        @foreach (var task in _tasks)
         {
-            <tr>@count ++</tr>
-            <tr>@task.Title</tr>
-            <tr>@task.Description</tr>
-            <tr>@task.StartTime</tr>
-            <tr>@task.Deadline</tr>
+            
+            <tr>
+                <td>@count++</td>
+                <td>@task.Title</td>
+                <td>@task.Description</td>
+                <td>@task.StartTime.ToShortDateString()</td>
+                <td>@task.Deadline.ToShortDateString()</td>
+            </tr>
         }
     </tbody>
 </table>
@@ -45,9 +48,9 @@
 }
 @code {
 
-
-    List<TaskEntity> _tasks = new();
     int count = 1;
+    List<TaskEntity> _tasks = new();
+    
 
     string responseMessage = string.Empty;
     string token = string.Empty;
@@ -57,7 +60,7 @@
         try
         {
             var response = await Http.GetFromJsonAsync<Response>("task/list");
-            responseMessage = response.Message;
+            //responseMessage = response.Message;
             _tasks = response.TasksList;
         }
         catch (Exception ex)

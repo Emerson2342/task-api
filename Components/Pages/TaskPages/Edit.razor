@@ -1,14 +1,16 @@
-﻿@page "/create-task"
+﻿@page "/task-list/edit/{id:guid}"
+
+
 @using global::TaskList.Components.Domain.Infra.Data
 @using global::TaskList.Components.Domain.Main.DTOs.TaskDTOs
+@using global::TaskList.Components.Domain.Main.Entities
 @using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
 
 
+@inject HttpClient Http;
 
-@inject AppDbContext Context
-@inject HttpClient Http
-
-<h3>Criar nova tarefa</h3>
+<h3>Editar</h3>
+<p>@Id</p>
 
 <EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskForm">
     <DataAnnotationsValidator />
@@ -30,11 +32,11 @@
     </div>
     <div class="mb-3">
         <label for="Deadline" class="form-label">Data do Término</label>
-        <InputDate class="form-control" id="Deadline" @bind-Value="model.Deadline" />
+        <InputDate DisplayName="ssss" class="form-control" id="Deadline" @bind-Value="model.Deadline" />
 
     </div>
 
-    <button class="btn btn-success" type="submit">Criar Tarefa</button>
+    <button class="btn btn-success" type="submit">Alterar Tarefa</button>
 </EditForm>
 
 @if (!string.IsNullOrEmpty(responseMessage))
@@ -43,38 +45,34 @@
         @responseMessage
     </div>
 }
+<p>@inTask.Title</p>
+
 
 @code {
+    [Parameter]
+    public Guid Id { get; set; }
 
-    [SupplyParameterFromForm]
-    private RequestTask model { get; set; } = new();
 
-
+    private RequestTask model = new();
+    private RequestTask inTask = new();
     private string? responseMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
 
     private async Task<Response> HandleSubmit()
     {
-        model.UserId = Guid.Parse("74cbaa7e-d038-469d-a786-04bcc110ef3f");
-        var response = await Http.PostAsJsonAsync("task/create", model);
-
-        if (model.StartTime == null || model.Deadline == null)
-        {
-            responseMessage = "Data de Início e Data do Término são obrigatórias.";
-            return null;
-        }
-
+       
+     
+        model.Id = Id;
+        var response = await Http.PostAsJsonAsync("task/edit", model);
+        
         var result = await response.Content.ReadFromJsonAsync<Response>();
         responseMessage = result.Message;
 
-        if(result.IsSuccess)
-        {
-            model.Title = string.Empty;
-            model.Description = string.Empty;
-            model.StartTime = null;
-            model.Deadline = null;
-        }
-
         return result;
-  
     }
 }

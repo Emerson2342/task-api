@@ -13,7 +13,6 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
         {
             _context = context;
         }
-
         public async Task<bool> AnyTaskByTitleAsync(string title)
         {
             return await _context.Tasks.AnyAsync(task => task.Title == title);
@@ -56,7 +55,6 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
         {
             return await _context.Tasks.ToListAsync();
         }
-
 
     }
 }

@@ -56,39 +56,14 @@ namespace TaskList.Components.Domain.Main.Controllers
 
             return Ok(result);
         }
-        [SwaggerOperation(Summary = "Recadastrar senha.", Description = "Página para cadastrar uma nova senha.")]
-        [HttpGet("reset-password/{token}")]
-        public IActionResult ResetPasswordHtml([FromRoute] string token)
+        [SwaggerOperation(Summary = "Recadastrar senha.", Description = "Endpoint para cadastrar uma nova senha.")]
+        [HttpPost("reset-password/{token}")]
+        public async  Task<IActionResult> ResetPassword(
+            [FromRoute] string token,
+            [FromBody] RequestPassword password)
         {
-            string htmlContent = $@"
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset='utf-8' />
-                    <title>Resetar Senha</title>
-                </head>
-                <body>
-                    <h1>Resetar Senha</h1>
-                    <h3>Digite a nova senha</h3>
-                    <form method='post' action='/user/reset-password'>
-                        <input type='password' name='password' placeholder='Digite a nova senha' />
-                        <input type='hidden' name='token' value='{token}' />
-                        <button type='submit'>Salvar nova Senha</button>
-                    </form>
-                </body>
-                </html>";
+            var result = await _handler.ResetPassword(token, password.NewPassword);
 
-            return Content(htmlContent, "text/html");
-        }
-
-        //endpoint from html forms
-        [SwaggerOperation(Summary = "Alterar senha.", Description = "Endpoint para executar a alteração de senha vinda da página HTML.")]
-        [HttpPost("/user/reset-password")]
-        public async Task<IActionResult> ResetPasswordHtmlPost(
-            [FromForm] string password,
-            [FromForm] string token)
-        {
-            var result = await _handler.ResetPassword(token, password);
             return Ok(result);
         }
     }

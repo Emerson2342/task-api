@@ -27,7 +27,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
             return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id);
         }
 
-        public async Task<User> GetUserByDynamicTokenAsync(string token)
+        public async Task<User> GetUserByTokenFromRouteAsync(string token)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.Token == token);
         }
