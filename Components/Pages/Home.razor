@@ -6,6 +6,7 @@
 @inject AppDbContext Context
 @inject HttpClient Http
 @inject Authenticationservice Authenticationservice
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 <PageTitle>Página Inicial</PageTitle>
 
@@ -15,12 +16,12 @@
 <EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskForm">
     <div class="mb-1">
         <label for="Login" class="form-label">Email</label>
-        <InputText class="form-control"  id="email" @bind-Value="model.Email" />
+        <InputText class="form-control" id="email" @bind-Value="model.Email" />
     </div>
 
     <div class="mb-1">
-    <label for="Password" class="form-label">Senha</label>
-    <InputText class="form-control"  id="Title" @bind-Value="model.Password" />
+        <label for="Password" class="form-label">Senha</label>
+        <InputText class="form-control" id="Title" @bind-Value="model.Password" />
     </div>
 
     <button class="btn btn-success" type="submit">Entrar</button>
@@ -31,8 +32,10 @@
     <a class="btn btn-primary m-1" role="button" href="forgot-password">Esqueceu a senha?</a>
 
     <a class="btn btn-info m-1" role="button" href="create-user">Não tem conta?</a>
-   
+
 </div>
+<p>Token @token</p>
+<p>Token Guardado @tokenStored</p>
 
 @if (!string.IsNullOrEmpty(responseMessage))
 {
@@ -41,21 +44,52 @@
     </div>
 }
 
-@code{
+@code {
+
     [SupplyParameterFromForm]
     private RequestLogin model { get; set; } = new();
 
-
-    private string responseMessage;
+    string token = string.Empty;
+    string tokenStored = string.Empty;
+    private string responseMessage = string.Empty;
 
     private async Task<Response> HandleSubmit()
     {
-
         var result = await Authenticationservice.Login(model);
-            responseMessage = result.Message;
-
-            return result;
-
-
+        token = result.Token;
+        responseMessage = result.Message;
+        return result;
     }
+    protected override async Task OnInitializedAsync()
+    {
+        responseMessage = "Iniciou OnInitializedAsync";
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        responseMessage = "Iniciou";
+        StateHasChanged();
+    }
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+              
+    //     if (firstRender)
+    //     {
+    //         if (!string.IsNullOrEmpty(token))
+    //         {
+    //             await sessionStorage.SetItemAsync("authToken", token);
+    //             tokenStored = await sessionStorage.GetItemAsync<string>("authToken");
+    //         }
+    //         else
+    //         {
+    //             responseMessage = "Token não vazio";
+    //         }
+
+    //         token = string.Empty;
+    //         //StateHasChanged();
+    //     }
+       
+    // }
 }

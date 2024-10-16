@@ -10,55 +10,54 @@
 
 @inject AppDbContext Context
 @inject HttpClient Http
-@inject Authenticationservice Authenticationservice
+@inject Authenticationservice authenticationservice
 
 @if (string.IsNullOrEmpty(token))
 {
     <p>Acesso restrito</p>
-
     <NavLink href="/home" class="btn btn-primary">Login</NavLink>
-
-    <button @onclick="LoadToken">Definir Token</button>
 }
-
-
 else
 {
-<h3>Lista de Tarefas</h3>
+    <h3>Lista de Tarefas</h3>
     <p> Token @token</p>
-<table class="table">
-    <thead>
-        <tr>
-            <td>Ord</td>
-            <td>Nome</td>
-            <td>Descrição</td>
-            <td>Início</td>
-            <td>Término</td>
-        </tr>
-    </thead>
-    <tbody>
-
-        @foreach (var task in _tasks)
-        {
-            
+    <table class="table">
+        <thead>
             <tr>
-                <td>@count++</td>
-                <td>@task.Title</td>
-                <td>@task.Description</td>
-                <td>@task.StartTime.ToShortDateString()</td>
-                <td>@task.Deadline.ToShortDateString()</td>
+                <td>Ord</td>
+                <td>Nome</td>
+                <td>Descrição</td>
+                <td>Início</td>
+                <td>Término</td>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
 
-@if (!string.IsNullOrEmpty(responseMessage))
-{
-    <div class="alert alert-info mt-3">
-    @responseMessage
-    </div>
+            @foreach (var task in _tasks)
+            {
+
+                <tr>
+                    <td>@count++</td>
+                    <td>@task.Title</td>
+                    <td>@task.Description</td>
+                    <td>@task.StartTime.ToShortDateString()</td>
+                    <td>@task.Deadline.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    
+
+
+    @if (!string.IsNullOrEmpty(responseMessage))
+    {
+        <div class="alert alert-info mt-3">
+            @responseMessage
+        </div>
+    }
 }
-}
+<p>Token armazenado: @token</p>
 
 
 
@@ -74,13 +73,10 @@ else
 
         if (firstRender)
         {
-            token = await Authenticationservice.GetTokenAsync();
-            if (string.IsNullOrEmpty(token))
-            {
-                responseMessage = "Você precisa estar logado para acessar esta página";
-                return;
-            }
+            token = await authenticationservice.GetTokenAsync();
+            System.Diagnostics.Debug.WriteLine($"Token: {token}");
             await LoadTasks();
+
         }
         StateHasChanged();
     }
@@ -92,23 +88,15 @@ else
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, "task/list");
             requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-
             var response = await Http.SendAsync(requestMessage);
             var result = await response.Content.ReadFromJsonAsync<Response>();
 
-
-            //responseMessage = response.Message;
             _tasks = result.TasksList;
         }
         catch (Exception ex)
         {
             responseMessage = ex.Message;
         }
-    }
-
-    private async Task LoadToken()
-    {
-        await Authenticationservice.LoadToken();
     }
 
 }

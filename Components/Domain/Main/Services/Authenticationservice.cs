@@ -1,18 +1,19 @@
 
 
 using Blazored.LocalStorage;
+using Blazored.SessionStorage;
 using TaskList.Components.Domain.Main.DTOs.UserDTOs;
 using TaskList.Components.Domain.Main.UseCases.ResponseCase;
 
 public class Authenticationservice
 {
     private readonly HttpClient _http;
-    private readonly ILocalStorageService _localStorage;
+    private readonly ISessionStorageService _sesionStorage;
 
-    public Authenticationservice(HttpClient httpClient, ILocalStorageService localStorageService)
+    public Authenticationservice(HttpClient httpClient, ISessionStorageService sessionStorage)
     {
         _http = httpClient;
-        _localStorage = localStorageService;
+        _sesionStorage = sessionStorage;
     }
 
     public async Task<Response> Login(RequestLogin login)
@@ -21,20 +22,14 @@ public class Authenticationservice
 
 
         var result = await response.Content.ReadFromJsonAsync<Response>();
-        await _localStorage.SetItemAsync("authToken", "123456");
+        //await _sesionStorage.SetItemAsync("authToken",login);
 
         return result;
     }
 
     public async Task<string> GetTokenAsync()
     {
-        return await _localStorage.GetItemAsync<string>("authToken");
+        return await _sesionStorage.GetItemAsync<string>("authToken");
     }
-
-    public async Task LoadToken()
-    {
-        await _localStorage.SetItemAsync("authToken", "123456");
-    }
-
 
 }
