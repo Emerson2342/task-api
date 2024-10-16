@@ -45,7 +45,7 @@
         @responseMessage
     </div>
 }
-<p>@inTask.Title</p>
+
 
 
 @code {
@@ -54,12 +54,15 @@
 
 
     private RequestTask model = new();
-    private RequestTask inTask = new();
+    private TaskEntity inTask = new();
     private string? responseMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        
+        var response = await Http.GetAsync($"task/task/{Id}");
+        Response result = await response.Content.ReadFromJsonAsync<Response>();
+        inTask = result.TaskList;
+        responseMessage = result.Message;
     }
 
 

@@ -7,7 +7,7 @@ using TaskList.Components.Domain.Main.UseCases.Create;
 namespace TaskList.Components.Domain.Main.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("task")]
     public class TaskController : Controller
     {
@@ -57,7 +57,7 @@ namespace TaskList.Components.Domain.Main.Controllers
 
         }
         [SwaggerOperation(Summary = "Buscar uma tarefa.", Description = "Endpoint para buscar uma tarefa através do ID.")]
-        [HttpGet("task")]
+        [HttpGet("task/{taskId}")]
         public async Task<IActionResult> GetTask([FromRoute] Guid taskId)
         {
             var result = await _handler.GetTask(taskId);

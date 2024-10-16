@@ -34,8 +34,9 @@
     <a class="btn btn-info m-1" role="button" href="create-user">Não tem conta?</a>
 
 </div>
-<p>Token @token</p>
-<p>Token Guardado @tokenStored</p>
+
+<p>Token: @token</p>
+<p>Token: Guardado @tokenStored</p>
 
 @if (!string.IsNullOrEmpty(responseMessage))
 {
@@ -60,11 +61,7 @@
         responseMessage = result.Message;
         return result;
     }
-    protected override async Task OnInitializedAsync()
-    {
-        responseMessage = "Iniciou OnInitializedAsync";
-        await base.OnInitializedAsync();
-    }
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -72,9 +69,16 @@
         StateHasChanged();
     }
 
+    private async Task SaveToken()
+    {
+        await sessionStorage.SetItemAsync("authToken", token);
+        tokenStored = await sessionStorage.GetItemAsync<string>("authToken");
+        responseMessage = "Token salvo com sucesso!";
+    }
+
     // protected override async Task OnAfterRenderAsync(bool firstRender)
     // {
-              
+
     //     if (firstRender)
     //     {
     //         if (!string.IsNullOrEmpty(token))
@@ -90,6 +94,6 @@
     //         token = string.Empty;
     //         //StateHasChanged();
     //     }
-       
+
     // }
 }

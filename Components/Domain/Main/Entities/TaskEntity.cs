@@ -22,7 +22,7 @@ namespace TaskList.Components.Domain.Main.Entities
         [JsonPropertyName("deadLine")]
         public DateTime Deadline { get; set; }
 
-        private TaskEntity() { }
+        public TaskEntity() { }
         [JsonConstructor]
         private TaskEntity(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
         {

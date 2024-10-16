@@ -41,7 +41,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
 
             // return new Response($"Tarefa editada com sucesso! {exists}", 201);
 
-            if (!exists) return new Response("Tarefa não encontrada!", 400);
+            if (!exists) return new Response($"Tarefa para editar não encontrada! Id: {taskToEdit.Id}", 400);
 
             var originalTask = await _repository.GetTaskById(taskToEdit.Id);
             // return new Response($"Tarefa editada com sucesso! {originalTask.ToString}", 201);
