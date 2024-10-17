@@ -18,12 +18,13 @@ namespace TaskList.Components.Domain.Main.Entities
         [JsonPropertyName("description")]
         public string Description { get; set; }
         [JsonPropertyName("startTime")]
-        public DateTime StartTime { get; set; }
+        public DateTime? StartTime { get; set; }
         [JsonPropertyName("deadLine")]
-        public DateTime Deadline { get; set; }
+        public DateTime? Deadline { get; set; }
 
-        public TaskEntity() { }
         [JsonConstructor]
+        public TaskEntity() { }
+        
         private TaskEntity(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
         {
             UserId = userId;
@@ -49,15 +50,25 @@ namespace TaskList.Components.Domain.Main.Entities
             return new TaskResult(new Response("Atividade adicionada com sucesso!", task), task);
         }
 
-        public static TaskEntity Edit(TaskEntity originalTask, RequestTask taskToEdit)
+        public static bool CheckEdit(RequestTask task)
         {
-           originalTask.Title =  !string.IsNullOrEmpty(taskToEdit.Title) ? taskToEdit.Title : originalTask.Title;
-           originalTask.Description =  !string.IsNullOrEmpty(taskToEdit.Description) ? taskToEdit.Description : originalTask.Description;
-           originalTask.StartTime =  taskToEdit.StartTime.HasValue ? taskToEdit.StartTime.Value : originalTask.StartTime;
-           originalTask.Deadline =  taskToEdit.Deadline.HasValue ? taskToEdit.Deadline.Value : originalTask.Deadline;
-            
-           return originalTask;
+            if (string.IsNullOrEmpty(task.Title) 
+                || string.IsNullOrEmpty(task.Description)
+                || !task.StartTime.HasValue
+                || !task.Deadline.HasValue)
+                return false;
+            return true;
         }
+
+        //public static TaskEntity Edit(TaskEntity taskToEdit)
+        //{
+        //   originalTask.Title =  !string.IsNullOrEmpty(taskToEdit.Title) ? taskToEdit.Title : originalTask.Title;
+        //   originalTask.Description =  !string.IsNullOrEmpty(taskToEdit.Description) ? taskToEdit.Description : originalTask.Description;
+        //   originalTask.StartTime =  taskToEdit.StartTime.HasValue ? taskToEdit.StartTime.Value : originalTask.StartTime;
+        //   originalTask.Deadline =  taskToEdit.Deadline.HasValue ? taskToEdit.Deadline.Value : originalTask.Deadline;
+
+        //   return originalTask;
+        //}
 
         public class TaskResult
         {

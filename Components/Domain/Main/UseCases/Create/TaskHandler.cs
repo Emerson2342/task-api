@@ -39,23 +39,27 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
         {
             var exists = await _repository.AnyTaskByIdAsync(taskToEdit.Id);
 
-            // return new Response($"Tarefa editada com sucesso! {exists}", 201);
-
             if (!exists) return new Response($"Tarefa para editar não encontrada! Id: {taskToEdit.Id}", 400);
 
             var originalTask = await _repository.GetTaskById(taskToEdit.Id);
-            // return new Response($"Tarefa editada com sucesso! {originalTask.ToString}", 201);
 
-            var task = TaskEntity.Edit(originalTask, taskToEdit);
+            if (!TaskEntity.CheckEdit(taskToEdit))
+                return new Response("Favor preencher todos os campos",400);
 
-            await _repository.UpdateAsync(task);
+                originalTask.Title = taskToEdit.Title;
+            originalTask.Description = taskToEdit.Description;
+            originalTask.StartTime = taskToEdit.StartTime;
+            originalTask.Deadline = taskToEdit.Deadline;
+           
 
-            return new Response("Tarefa editada com sucesso!", 201);
+                await _repository.UpdateAsync(originalTask);
+
+            return new Response($"Tarefa editada com sucesso! {originalTask.Title}", 201);
         }
         public async Task<Response> DeleteTask(Guid id)
         {
             var exists = await _repository.AnyTaskByIdAsync(id);
-            if (!exists) return new Response("Tarefa não encontrada!", 400);
+            if (!exists) return new Response($"Tarefa não encontrada! Id: {id}", 400);
 
             var task = await _repository.GetTaskById(id);
 
@@ -68,13 +72,14 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
         {
             try
             {
-                 List<TaskEntity> tasks= await _repository.ListTasks();
-                return new Response("Atividade listadas com sucess!", tasks);
+                List<TaskEntity> tasks = await _repository.ListTasks();
+                return new Response(null, tasks);
             }
-            catch  {
+            catch
+            {
                 return new Response("Erro ao listar as atividades!", 500);
             }
-            
+
         }
 
         public async Task<Response> GetTask(Guid id)

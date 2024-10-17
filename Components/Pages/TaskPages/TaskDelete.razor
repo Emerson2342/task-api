@@ -1,4 +1,4 @@
-﻿@page "/task-list/edit/{id:guid}"
+﻿@page "/task-list/delete/{id:guid}"
 
 
 @using global::TaskList.Components.Domain.Infra.Data
@@ -6,37 +6,27 @@
 @using global::TaskList.Components.Domain.Main.Entities
 @using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
 
+@inject NavigationManager NavManager
+
 
 @inject HttpClient Http;
 
-<h3>Editar</h3>
-<p>@Id</p>
+<h3>Deseja apagar a tarefa "@model.Title"?</h3>
 
-<EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskForm">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<EditForm Model="model" OnSubmit="HandleDelete" FormName="taskEditForm">
 
     <div class="mb-1">
         <label for="Title" class="form-label">Título</label>
-        <InputText class="form-control" id="Title" @bind-Value="model.Title" />
+    <InputText readonly class="form-control" id="Title" @bind-Value="model.Title" />
     </div>
     <div class="mb-3">
         <label for="Text" class="form-label">Descrição</label>
-        <InputText class="form-control" id="Description" @bind-Value="model.Description" />
-
-    </div>
-    <div class="mb-3">
-        <label for="StartTime" class="form-label">Data de Início</label>
-        <InputDate class="form-control" id="Password" @bind-Value="model.StartTime" />
-
-    </div>
-    <div class="mb-3">
-        <label for="Deadline" class="form-label">Data do Término</label>
-        <InputDate DisplayName="ssss" class="form-control" id="Deadline" @bind-Value="model.Deadline" />
+    <InputText readonly class="form-control" id="Description" @bind-Value="model.Description" />
 
     </div>
 
-    <button class="btn btn-success" type="submit">Alterar Tarefa</button>
+
+<button class="btn btn-success" type="submit">Apagar Tarefa</button>
 </EditForm>
 
 @if (!string.IsNullOrEmpty(responseMessage))
@@ -52,30 +42,32 @@
     [Parameter]
     public Guid Id { get; set; }
 
-
     private RequestTask model = new();
-    private TaskEntity inTask = new();
+    //private TaskEntity model = new();
+    private RequestTask taskToDelete = new();
     private string? responseMessage;
 
     protected override async Task OnInitializedAsync()
     {
         var response = await Http.GetAsync($"task/task/{Id}");
         Response result = await response.Content.ReadFromJsonAsync<Response>();
-        inTask = result.TaskList;
+        //model.Id = result.TaskList.Id;
+        model.Title = result.TaskList.Title;
+        model.Description = result.TaskList.Description;
+
         responseMessage = result.Message;
     }
 
 
-    private async Task<Response> HandleSubmit()
+    private async Task<Response> HandleDelete()
     {
-       
-     
-        model.Id = Id;
-        var response = await Http.PostAsJsonAsync("task/edit", model);
-        
+        taskToDelete.Id = Id;
+        var response = await Http.PostAsJsonAsync("task/delete", taskToDelete);
+
         var result = await response.Content.ReadFromJsonAsync<Response>();
         responseMessage = result.Message;
 
+        NavManager.NavigateTo("task-list");
         return result;
     }
 }

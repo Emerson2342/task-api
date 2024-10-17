@@ -12,7 +12,7 @@
 @inject HttpClient Http
 @inject Authenticationservice authenticationservice
 
-@if (string.IsNullOrEmpty(token))
+@if (!string.IsNullOrEmpty(token))
 {
     <p>Acesso restrito</p>
     <NavLink href="/home" class="btn btn-primary">Login</NavLink>
@@ -20,7 +20,6 @@
 else
 {
     <h3>Lista de Tarefas</h3>
-    <p> Token @token</p>
     <table class="table">
         <thead>
             <tr>
@@ -40,14 +39,20 @@ else
                     <td>@count++</td>
                     <td>@task.Title</td>
                     <td>@task.Description</td>
-                    <td>@task.StartTime.ToShortDateString()</td>
-                    <td>@task.Deadline.ToShortDateString()</td>
+                    <td>@task.StartTime?.ToShortDateString()</td>
+                    <td>@task.Deadline?.ToShortDateString()</td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Third group">
+                            <a class="btn btn-primary" href="/task-list/edit/@task.Id">Editar</a>
+                            <a class="btn btn-danger" href="/task-list/delete/@task.Id">Apagar</a>
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 
-    
+    <a href="create-task" class="btn btn-primary"><i class="oi oi-plus"></i> Adicionar Tarefa </a>
 
 
     @if (!string.IsNullOrEmpty(responseMessage))
@@ -57,9 +62,6 @@ else
         </div>
     }
 }
-<p>Token armazenado: @token</p>
-
-
 
 @code {
     int count = 1;
@@ -68,35 +70,11 @@ else
     string responseMessage = string.Empty;
     string token = string.Empty;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-
-        if (firstRender)
-        {
-            token = await authenticationservice.GetTokenAsync();
-            System.Diagnostics.Debug.WriteLine($"Token: {token}");
-            await LoadTasks();
-
-        }
-        StateHasChanged();
+        var response = await Http.GetAsync("task/list");
+        var result = await response.Content.ReadFromJsonAsync<Response>();
+        _tasks = result.TasksList;
+        responseMessage = result.Message;
     }
-
-    private async Task LoadTasks()
-    {
-        try
-        {
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, "task/list");
-            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            var response = await Http.SendAsync(requestMessage);
-            var result = await response.Content.ReadFromJsonAsync<Response>();
-
-            _tasks = result.TasksList;
-        }
-        catch (Exception ex)
-        {
-            responseMessage = ex.Message;
-        }
-    }
-
 }

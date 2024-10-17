@@ -1,0 +1,92 @@
+﻿@page "/task-list/edit/{id:guid}"
+
+
+@using global::TaskList.Components.Domain.Infra.Data
+@using global::TaskList.Components.Domain.Main.DTOs.TaskDTOs
+@using global::TaskList.Components.Domain.Main.Entities
+@using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
+
+
+@inject HttpClient Http;
+
+<h3>Editar</h3>
+<p>@model.Id</p>
+
+<EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskEditForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-1">
+        <label for="Title" class="form-label">Título</label>
+        <InputText class="form-control" id="Title" @bind-Value="model.Title" />
+    </div>
+    <div class="mb-3">
+        <label for="Text" class="form-label">Descrição</label>
+        <InputText class="form-control" id="Description" @bind-Value="model.Description" />
+
+    </div>
+    <div class="mb-3">
+        <label for="StartTime" class="form-label">Data de Início</label>
+        <InputDate class="form-control" id="Password" @bind-Value="model.StartTime" />
+
+    </div>
+    <div class="mb-3">
+        <label for="Deadline" class="form-label">Data do Término</label>
+        <InputDate DisplayName="ssss" class="form-control" id="Deadline" @bind-Value="model.Deadline" />
+
+    </div>
+
+    <button class="btn btn-success" type="submit">Alterar Tarefa</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(responseMessage))
+{
+    <div class="alert alert-info mt-3">
+        @responseMessage
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    
+    private RequestTask model = new();
+   // private RequestTask taskEdited = new();
+    private string? responseMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetAsync($"task/task/{Id}");
+        Response result = await response.Content.ReadFromJsonAsync<Response>();
+
+
+        model.Id = Id;
+        model.Title = result.TaskList.Title;
+        model.Description = result.TaskList.Description;
+        model.StartTime = result.TaskList.StartTime;
+        model.Deadline = result.TaskList.Deadline;
+        responseMessage = "asdfasdfasd";
+    }
+
+    private async Task<Response> HandleSubmit()
+    {
+
+       var taskEdited = new RequestTask
+            {
+                Id = Id,
+                Title = "ssssss",
+                Description = model.Description,
+                StartTime = model.StartTime,
+                Deadline = model.Deadline
+            };
+       
+
+        var response = await Http.PostAsJsonAsync("task/edit", taskEdited);
+
+        var result = await response.Content.ReadFromJsonAsync<Response>();
+
+        responseMessage = result.Message;
+
+        return result;
+    }
+}

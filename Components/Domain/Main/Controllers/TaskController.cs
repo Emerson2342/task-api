@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using TaskList.Components.Domain.Main.DTOs.TaskDTOs;
+using TaskList.Components.Domain.Main.Entities;
 using TaskList.Components.Domain.Main.UseCases.Create;
 
 namespace TaskList.Components.Domain.Main.Controllers
@@ -38,7 +39,7 @@ namespace TaskList.Components.Domain.Main.Controllers
         }
 
         [SwaggerOperation(Summary = "Remover tarefa.", Description = "Endpoint para apagar uma tarefa")]
-        [HttpPost("remove")]
+        [HttpPost("delete")]
         public async Task<IActionResult> DeleteTask([FromBody] RequestTask taskToDelete)
         {
             var result = await _handler.DeleteTask(taskToDelete.Id);
