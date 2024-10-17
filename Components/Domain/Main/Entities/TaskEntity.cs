@@ -23,8 +23,8 @@ namespace TaskList.Components.Domain.Main.Entities
         public DateTime? Deadline { get; set; }
 
         [JsonConstructor]
-        public TaskEntity() { }
-        
+        protected TaskEntity() { }
+
         private TaskEntity(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
         {
             UserId = userId;

@@ -12,27 +12,29 @@
 <h3>Editar</h3>
 <p>@model.Id</p>
 
-<EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskEditForm">
+<EditForm Model="model" OnSubmit="HandleEdit" FormName="taskEditForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="mb-1">
         <label for="Title" class="form-label">Título</label>
-        <InputText class="form-control" id="Title" @bind-Value="model.Title" />
+        <InputText class="form-control" placeholder="@modelIn.Title" id="Title" @bind-Value="model!.Title" />
     </div>
     <div class="mb-3">
         <label for="Text" class="form-label">Descrição</label>
-        <InputText class="form-control" id="Description" @bind-Value="model.Description" />
+        <InputText class="form-control" placeholder="@modelIn.Description" id="Description"
+            @bind-Value="model.Description" />
 
     </div>
     <div class="mb-3">
         <label for="StartTime" class="form-label">Data de Início</label>
-        <InputDate class="form-control" id="Password" @bind-Value="model.StartTime" />
+        <InputDate class="form-control" placeholder="@modelIn.StartTime" id="Password" @bind-Value="model.StartTime" />
 
     </div>
     <div class="mb-3">
         <label for="Deadline" class="form-label">Data do Término</label>
-        <InputDate DisplayName="ssss" class="form-control" id="Deadline" @bind-Value="model.Deadline" />
+        <InputDate DisplayName="ssss" placeholder="@modelIn.Deadline" class="form-control" id="Deadline"
+            @bind-Value="model.Deadline" />
 
     </div>
 
@@ -49,44 +51,35 @@
 @code {
     [Parameter]
     public Guid Id { get; set; }
-    
-    private RequestTask model = new();
-   // private RequestTask taskEdited = new();
+
+    [SupplyParameterFromForm]
+    private RequestTask model { get; set; } = new();
+
+    private RequestTask modelIn = new();
+    private RequestTask taskEdited = new();
     private string? responseMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await Http.GetAsync($"task/task/{Id}");
-        Response result = await response.Content.ReadFromJsonAsync<Response>();
-
-
+        //var response = await Http.GetAsync($"task/task/{Id}");
+        //Response result = await response.Content.ReadFromJsonAsync<Response>();
         model.Id = Id;
-        model.Title = result.TaskList.Title;
-        model.Description = result.TaskList.Description;
-        model.StartTime = result.TaskList.StartTime;
-        model.Deadline = result.TaskList.Deadline;
-        responseMessage = "asdfasdfasd";
+        modelIn.Title = "Segunda-Feira";
+        modelIn.Description = "Iniciando a semana com estágio";
+        modelIn.StartTime = DateTime.UtcNow;
+        modelIn.Deadline = DateTime.UtcNow.AddDays(2);
+        responseMessage = "Iniciou";
     }
 
-    private async Task<Response> HandleSubmit()
+    private void HandleEdit()
     {
+        //var response = await Http.PostAsJsonAsync("task/edit", taskEdited);
 
-       var taskEdited = new RequestTask
-            {
-                Id = Id,
-                Title = "ssssss",
-                Description = model.Description,
-                StartTime = model.StartTime,
-                Deadline = model.Deadline
-            };
-       
+        // var result = await response.Content.ReadFromJsonAsync<Response>();
 
-        var response = await Http.PostAsJsonAsync("task/edit", taskEdited);
+        responseMessage = $"Título editado: {model.Title}";
 
-        var result = await response.Content.ReadFromJsonAsync<Response>();
 
-        responseMessage = result.Message;
-
-        return result;
+        //return response;
     }
 }
