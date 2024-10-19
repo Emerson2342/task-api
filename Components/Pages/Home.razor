@@ -3,43 +3,51 @@
 @using TaskList.Components.Domain.Main.DTOs.UserDTOs
 @using TaskList.Components.Domain.Main.UseCases.ResponseCase
 
+@inject NavigationManager NavManager
 @inject AppDbContext Context
 @inject HttpClient Http
 @inject Authenticationservice Authenticationservice
 @inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
-<PageTitle>Página Inicial</PageTitle>
+<PageTitle>Seja bem vindo</PageTitle>
+<h1 style="text-align:center;width:100%">Lista de Tarefas</h1>
+<div style="display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;">
+    <div>
+        <img src="images/homePage.jpg" alt="Imagem da Home Page" />
+    </div>
+    <div style="width: 30%">
+        <EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskForm">
+            <div style="padding-bottom:5%">
+                <label for="Password" class="form-label">Login</label>
+                <InputText style="text-align:center" class="form-control" placeHolder="nome@email.com" id="email" @bind-Value="model.Email" />
+            </div>
 
-<h1>Login</h1>
+            <div class="inputContent">
+                <label for="Password" class="form-label">Senha</label>
+                <InputText style="text-align:center" class="form-control" placeHolder="**********" id="Title" @bind-Value="model.Password" />
+            </div>
 
-
-<EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskForm">
-    <div class="mb-1">
-        <label for="Login" class="form-label">Email</label>
-        <InputText class="form-control" id="email" @bind-Value="model.Email" />
+            <button class="btn btn-success" style="width:100%;margin-top:3%" type="submit">Entrar</button>
+            <div style="padding: 3%;width: 100%;display: flex;flex-direction: column;align-items: center">
+                <a href="forgot-password">Esqueceu a senha?</a>
+                <a href="create-user">Não tem conta?</a>
+            </div>
+        </EditForm>
     </div>
 
-    <div class="mb-1">
-        <label for="Password" class="form-label">Senha</label>
-        <InputText class="form-control" id="Title" @bind-Value="model.Password" />
-    </div>
-
-    <button class="btn btn-success" type="submit">Entrar</button>
-
-</EditForm>
-
-<div class="mt-3 btn-group">
-    <a class="btn btn-primary m-1" role="button" href="forgot-password">Esqueceu a senha?</a>
-
-    <a class="btn btn-info m-1" role="button" href="create-user">Não tem conta?</a>
 
 </div>
 
 @if (!string.IsNullOrEmpty(responseMessage))
 {
-    <div class="alert alert-info mt-3">
+
+    <div class="alert alert-info mt-3 mx-auto text-center" style="width:50%;">
         @responseMessage
     </div>
+
 }
 
 @code {
@@ -56,7 +64,13 @@
         var result = await Authenticationservice.Login(model);
         token = result.Token;
         responseMessage = result.Message;
+        if (result.IsSuccess)
+        {
+            NavManager.NavigateTo("/task-list");
+        }
+
         return result;
+
     }
 
 

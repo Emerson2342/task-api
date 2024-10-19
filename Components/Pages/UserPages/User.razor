@@ -11,36 +11,45 @@
 @inject HttpClient Http
 
 
-<h3>Criar Usuário</h3>
+<h3 style="text-align:center;width:100%">Criar Conta</h3>
 
-<EditForm Model="model" OnSubmit="HandleSubmit" FormName="createUserForm">
-    <DataAnnotationsValidator />
-    <ValidationSummary />  
-
-    <div class="mb-1">
-        <label for="Name" class="form-label">Nome</label>
-        <InputText class="form-control" id="Name" @bind-Value="model.Name" />
-        <ValidationMessage For="@(() => model.Name)" />
+<div style="display: flex;justify-content: center;align-items: center;width: 90%;">
+    <div>
+        <img src="images/newUser.png" alt="Imagem Novo Usuario" />
     </div>
-    <div class="mb-3">
-        <label for="Email" class="form-label">Email</label>
-        <InputText class="form-control" type="email" id="Email" @bind-Value="model.Email" />
-        <ValidationMessage For="@(() => model.Email)" />
+    <div style="width:25%">
+        <EditForm Model="model" OnSubmit="HandleSubmit" FormName="createUserForm">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="mb-1">
+                <label for="Name" class="form-label">Nome</label>
+                <InputText class="form-control" id="Name" style="text-align:center" placeHolder="Digite seu nome" @bind-Value="model.Name" />
+            </div>
+            <div class="mb-3">
+                <label for="Email" class="form-label">Email</label>
+                <InputText class="form-control" type="email" id="Email" style="text-align:center" placeHolder="Digite seu email" @bind-Value="model.Email" />
+
+            </div>
+            <div class="mb-3">
+                <label for="Password" class="form-label">Senha</label>
+                <InputText class="form-control" type="password" style="text-align:center" placeHolder="Digite sua senha" id="Password" @bind-Value="model.Password" />
+
+            </div>
+
+            <button class="btn btn-success" type="submit" style="width:100%">Criar Usuário</button>
+            <a class="btn btn-primary" href="/home" style="width:100%;margin-top:3%">Voltar</a>
+        </EditForm>
     </div>
-    <div class="mb-3">
-        <label for="Password" class="form-label">Senha</label>
-        <InputText class="form-control" type="password" id="Password" @bind-Value="model.Password" />
-        <ValidationMessage For="@(() => model.Password)" />
+</div>
+
+
+@if (!string.IsNullOrEmpty(responseMessage))
+{
+    <div class="alert alert-info mt-3">
+        @responseMessage
     </div>
-
-    <button class="btn btn-success" type="submit">Criar Usuário</button>
-</EditForm>
-
-
-@if(!string.IsNullOrEmpty(responseMessage))
-{<div class="alert alert-info mt-3">
-    @responseMessage
-</div>}
+}
 
 @code {
     [SupplyParameterFromForm]
