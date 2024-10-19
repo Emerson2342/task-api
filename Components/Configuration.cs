@@ -5,14 +5,14 @@
 
         public static SecretsConfiguration Secrets { get; set; } = new();
         public static DataBaseConfiguration Database { get; set; } = new();
-        public static SmtpConfiguration Smtp { get; set; } = new();
-        public class SmtpConfiguration
-        {
-            public string Host { get; set; }
-            public int Port { get; set; } = 25;
-            public string UserName { get; set; }
-            public string Password { get; set; }
-        }
+        //public static SmtpConfiguration Smtp { get; set; } = new();
+        //public class SmtpConfiguration
+        //{
+        //    public string Host { get; set; }
+        //    public int Port { get; set; } = 25;
+        //    public string UserName { get; set; }
+        //    public string Password { get; set; }
+        //
 
 
         public class DataBaseConfiguration

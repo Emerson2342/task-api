@@ -11,21 +11,26 @@ namespace TaskList.Components.Domain.Main.Entities
     {
         [JsonPropertyName("userId")]
         public Guid UserId { get; set; }
+
         [JsonPropertyName("user")]
         public User User { get; set; }
+
         [JsonPropertyName("title")]
         public string Title { get; set; }
+
         [JsonPropertyName("description")]
         public string Description { get; set; }
+
         [JsonPropertyName("startTime")]
-        public DateTime? StartTime { get; set; }
+        public DateOnly StartTime { get; set; }
+
         [JsonPropertyName("deadLine")]
-        public DateTime? Deadline { get; set; }
+        public DateOnly Deadline { get; set; }
 
         [JsonConstructor]
         protected TaskEntity() { }
 
-        private TaskEntity(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
+        private TaskEntity(Guid userId, string title, string description, DateOnly startTime, DateOnly deadline)
         {
             UserId = userId;
             Title = title;
@@ -37,45 +42,42 @@ namespace TaskList.Components.Domain.Main.Entities
             Deadline = deadline;
         }
 
-        public static TaskResult With(Guid userId, string title, string description, DateTime startTime, DateTime deadline)
+        public static TaskResult New(Guid userId, string title, string description, DateOnly startTime, DateOnly deadline)
         {
             if (string.IsNullOrEmpty(title)) return new TaskResult(new Response("Favor preencher o título", 400), null);
 
             if (string.IsNullOrEmpty(description)) return new TaskResult(new Response("Favor preencher a descrição da atividade", 400), null);
-            if (startTime > DateTime.UtcNow) return new TaskResult(new Response("Data inicial inválida", 400), null);
-            if (deadline < DateTime.UtcNow) return new TaskResult(new Response("Data final da atividade inválida!", 400), null);
+            if (startTime < DateOnly.FromDateTime(DateTime.UtcNow)) return new TaskResult(new Response("Data inicial inválida", 400), null);
+            if (deadline < startTime) return new TaskResult(new Response("Data final da atividade não pode ser menor que a data inicial!", 400), null);
 
             TaskEntity task = new(userId, title, description, startTime, deadline);
 
-            return new TaskResult(new Response("Atividade adicionada com sucesso!", task), task);
+            return new TaskResult(new Response("Tarefa adicionada com sucesso!", task), task);
         }
 
-        public static bool CheckEdit(RequestTask task)
+        public static TaskResult Edit(TaskEntity originalTask, RequestTask editTask)
         {
-            if (string.IsNullOrEmpty(task.Title) 
-                || string.IsNullOrEmpty(task.Description)
-                || !task.StartTime.HasValue
-                || !task.Deadline.HasValue)
-                return false;
-            return true;
+            DateOnly defaultDate = new (1, 1, 1);
+
+            originalTask.Title = string.IsNullOrEmpty(editTask.Title) ? originalTask.Title : editTask.Title;
+            originalTask.Description = string.IsNullOrEmpty(editTask.Description) ? originalTask.Description : editTask.Description;
+            originalTask.StartTime = editTask.StartTime == defaultDate ? originalTask.StartTime : editTask.StartTime;
+            originalTask.Deadline = editTask.Deadline == defaultDate ? originalTask.Deadline : editTask.Deadline;
+
+            if (originalTask?.StartTime < DateOnly.FromDateTime(DateTime.UtcNow))
+                return new TaskResult(new Response("Data inicial inválida", 400), null);
+
+            if (originalTask?.Deadline < originalTask?.StartTime)
+                return new TaskResult(new Response("Data final da atividade não pode ser menor que a data inicial!", 400), null);
+
+            return new TaskResult(new Response("Tarefa editada com sucesso!", originalTask), originalTask);
         }
-
-        //public static TaskEntity Edit(TaskEntity taskToEdit)
-        //{
-        //   originalTask.Title =  !string.IsNullOrEmpty(taskToEdit.Title) ? taskToEdit.Title : originalTask.Title;
-        //   originalTask.Description =  !string.IsNullOrEmpty(taskToEdit.Description) ? taskToEdit.Description : originalTask.Description;
-        //   originalTask.StartTime =  taskToEdit.StartTime.HasValue ? taskToEdit.StartTime.Value : originalTask.StartTime;
-        //   originalTask.Deadline =  taskToEdit.Deadline.HasValue ? taskToEdit.Deadline.Value : originalTask.Deadline;
-
-        //   return originalTask;
-        //}
 
         public class TaskResult
         {
             public Response Response { get; set; }
             public TaskEntity TaskEntity { get; set; }
            
-
             public TaskResult(Response response, TaskEntity taskEntity)
             {
                 Response = response;

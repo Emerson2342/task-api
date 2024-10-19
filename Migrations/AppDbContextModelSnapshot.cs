@@ -26,24 +26,30 @@ namespace TaskList.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
-                    b.Property<DateTime>("Deadline")
-                        .HasColumnType("datetime(6)");
+                    b.Property<DateOnly>("Deadline")
+                        .HasColumnType("date")
+                        .HasAnnotation("Relational:JsonPropertyName", "deadLine");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasAnnotation("Relational:JsonPropertyName", "description");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime(6)");
+                    b.Property<DateOnly>("StartTime")
+                        .HasColumnType("date")
+                        .HasAnnotation("Relational:JsonPropertyName", "startTime");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasAnnotation("Relational:JsonPropertyName", "title");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasAnnotation("Relational:JsonPropertyName", "userId");
 
                     b.HasKey("Id");
 
@@ -56,7 +62,8 @@ namespace TaskList.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<sbyte>("IsEmailConfirmed")
                         .HasColumnType("TINYINT")
@@ -78,6 +85,8 @@ namespace TaskList.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("users", (string)null);
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "user");
                 });
 
             modelBuilder.Entity("TaskList.Components.Domain.Main.Entities.TaskEntity", b =>

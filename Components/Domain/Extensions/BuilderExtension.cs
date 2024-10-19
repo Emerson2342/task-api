@@ -53,12 +53,12 @@ namespace TaskList.Components.Domain.Extensions
                 });
             builder.Services.AddAuthorization();
         }
-        public static void AddSmtp(this WebApplicationBuilder builder)
-        {
-            var smtp = new Configuration.SmtpConfiguration();
-            builder.Configuration.GetSection("Smtp").Bind(smtp);
-            Configuration.Smtp = smtp;
-        }
+        //public static void AddSmtp(this WebApplicationBuilder builder)
+        //{
+        //    var smtp = new Configuration.SmtpConfiguration();
+        //    builder.Configuration.GetSection("Smtp").Bind(smtp);
+        //    Configuration.Smtp = smtp;
+        //}
 
         public static void AddSwaggerDocumentation(this WebApplicationBuilder builder)
         {

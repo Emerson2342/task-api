@@ -27,12 +27,12 @@ namespace TaskList.Components.Domain.Main.DTOs.TaskDTOs
 
         [JsonPropertyName("startTime")]
         [SwaggerSchema("Data do início da tarefa.")]
-        public DateTime? StartTime { get; set; }
+        public DateOnly StartTime { get; set; }
 
 
         [JsonPropertyName("deadLine")]
         [SwaggerSchema("Data do término da tarefa.")]
-        public DateTime? Deadline { get; set; }
+        public DateOnly Deadline { get; set; }
 
         [JsonConstructor]
         public RequestTask()

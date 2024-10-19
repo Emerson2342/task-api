@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskList.Migrations
 {
     /// <inheritdoc />
-    public partial class v1 : Migration
+    public partial class addDateOnly : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -47,8 +47,8 @@ namespace TaskList.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    StartTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Deadline = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    StartTime = table.Column<DateOnly>(type: "date", nullable: false),
+                    Deadline = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {

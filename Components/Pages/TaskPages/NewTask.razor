@@ -54,7 +54,7 @@
 
     private async Task<Response> HandleSubmit()
     {
-        model.UserId = Guid.Parse("74cbaa7e-d038-469d-a786-04bcc110ef3f");
+        model.UserId = Guid.Parse("1f391bac-af8c-4d99-8f76-fb8f397e98d2");
         var response = await Http.PostAsJsonAsync("task/create", model);
 
         if (model.StartTime == null || model.Deadline == null)
@@ -70,8 +70,8 @@
         {
             model.Title = string.Empty;
             model.Description = string.Empty;
-            model.StartTime = null;
-            model.Deadline = null;
+            model.StartTime = new(1,1,1);
+            model.Deadline = new(1,1,1);
         }
 
         return result;

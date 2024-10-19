@@ -9,7 +9,7 @@ using TaskList.Components.Domain.Main.UseCases.Create;
 var builder = WebApplication.CreateBuilder(args);
 builder.AddConfiguration();
 builder.AddDataBase();
-builder.AddSmtp();
+//builder.AddSmtp();
 builder.AddJwtAuthentication();
 builder.AddSwaggerDocumentation();
 builder.Services.AddRazorPages();

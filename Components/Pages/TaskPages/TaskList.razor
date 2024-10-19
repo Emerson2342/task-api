@@ -39,8 +39,8 @@ else
                     <td>@count++</td>
                     <td>@task.Title</td>
                     <td>@task.Description</td>
-                    <td>@task.StartTime?.ToShortDateString()</td>
-                    <td>@task.Deadline?.ToShortDateString()</td>
+                    <td>@task.StartTime.ToShortDateString()</td>
+                    <td>@task.Deadline.ToShortDateString()</td>
                     <td>
                         <div class="btn-group" role="group" aria-label="Third group">
                             <a class="btn btn-primary" href="/task-list/edit/@task.Id">Editar</a>

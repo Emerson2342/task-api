@@ -25,7 +25,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             if (exists)
                 return new Response("Já existe uma tarefa com esse nome", 401);
 
-            var taskResult = TaskEntity.With(newTask.UserId, newTask.Title, newTask.Description, newTask.StartTime.Value, newTask.Deadline.Value);
+            var taskResult = TaskEntity.New(newTask.UserId, newTask.Title, newTask.Description, newTask.StartTime, newTask.Deadline);
 
             //in case null object from taskResult
             if (taskResult.TaskEntity == null)
@@ -43,18 +43,15 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
 
             var originalTask = await _repository.GetTaskById(taskToEdit.Id);
 
-            if (!TaskEntity.CheckEdit(taskToEdit))
-                return new Response("Favor preencher todos os campos",400);
+            var taskEdited = TaskEntity.Edit(originalTask, taskToEdit);
 
-                originalTask.Title = taskToEdit.Title;
-            originalTask.Description = taskToEdit.Description;
-            originalTask.StartTime = taskToEdit.StartTime;
-            originalTask.Deadline = taskToEdit.Deadline;
-           
+            if(taskEdited.TaskEntity == null)
+                return taskEdited.Response;
 
-                await _repository.UpdateAsync(originalTask);
 
-            return new Response($"Tarefa editada com sucesso! {originalTask.Title}", 201);
+            await _repository.UpdateAsync(taskEdited.TaskEntity);
+            
+            return new Response($"Tarefa editada com sucesso! {taskEdited.TaskEntity.Title}", 201);
         }
         public async Task<Response> DeleteTask(Guid id)
         {

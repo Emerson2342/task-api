@@ -9,8 +9,7 @@
 
 @inject HttpClient Http;
 
-<h3>Editar</h3>
-<p>@model.Id</p>
+<h3>Editar Tarefa</h3>
 
 <EditForm Model="model" OnSubmit="HandleEdit" FormName="taskEditForm">
     <DataAnnotationsValidator />
@@ -18,24 +17,31 @@
 
     <div class="mb-1">
         <label for="Title" class="form-label">Título</label>
-        <InputText class="form-control" placeholder="@modelIn.Title" id="Title" @bind-Value="model!.Title" />
+        <InputText class="form-control" placeholder="@modelIn.Title" id="Title" @bind-Value="@model.Title" />
     </div>
     <div class="mb-3">
         <label for="Text" class="form-label">Descrição</label>
         <InputText class="form-control" placeholder="@modelIn.Description" id="Description"
-            @bind-Value="model.Description" />
+                   @bind-Value="model.Description" />
 
     </div>
     <div class="mb-3">
-        <label for="StartTime" class="form-label">Data de Início</label>
-        <InputDate class="form-control" placeholder="@modelIn.StartTime" id="Password" @bind-Value="model.StartTime" />
+        <label for="StartTime" class="form-label">Data de Início: @modelIn.StartTime</label>
+        <div>
+            <div>
+                <label for="Deadline" class="form-label">Data do Término: @modelIn.Deadline</label>
+            </div>
 
+        </div>
     </div>
     <div class="mb-3">
-        <label for="Deadline" class="form-label">Data do Término</label>
-        <InputDate DisplayName="ssss" placeholder="@modelIn.Deadline" class="form-control" id="Deadline"
-            @bind-Value="model.Deadline" />
-
+        <label for="Deadline" class="form-label">Nova Data de Início</label>
+        <InputDate class="form-control" id="StartTime" @bind-Value="model.StartTime" />
+        
+    </div>
+    <div class="mb-3">
+        <label for="Deadline" class="form-label">Nova Data de Término</label>
+        <InputDate class="form-control" id="Deadline" @bind-Value="model.Deadline" />
     </div>
 
     <button class="btn btn-success" type="submit">Alterar Tarefa</button>
@@ -54,32 +60,36 @@
 
     [SupplyParameterFromForm]
     private RequestTask model { get; set; } = new();
+    private RequestTask modelIn { get; set; } = new();
 
-    private RequestTask modelIn = new();
     private RequestTask taskEdited = new();
     private string? responseMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        //var response = await Http.GetAsync($"task/task/{Id}");
-        //Response result = await response.Content.ReadFromJsonAsync<Response>();
-        model.Id = Id;
-        modelIn.Title = "Segunda-Feira";
-        modelIn.Description = "Iniciando a semana com estágio";
-        modelIn.StartTime = DateTime.UtcNow;
-        modelIn.Deadline = DateTime.UtcNow.AddDays(2);
-        responseMessage = "Iniciou";
+        var response = await Http.GetAsync($"task/task/{Id}");
+        Response result = await response.Content.ReadFromJsonAsync<Response>();
+
+
+        modelIn.Title = result.TaskList.Title;
+        modelIn.Description = result.TaskList.Description;
+        modelIn.StartTime = result.TaskList.StartTime;
+        modelIn.Deadline = result.TaskList.Deadline;
+
+        //responseMessage = result.Message;
     }
 
-    private void HandleEdit()
+    public async Task<Response> HandleEdit()
     {
-        //var response = await Http.PostAsJsonAsync("task/edit", taskEdited);
+        model.Id = Id;
+        taskEdited = model;
 
-        // var result = await response.Content.ReadFromJsonAsync<Response>();
+        var response = await Http.PostAsJsonAsync("task/edit", taskEdited);
 
-        responseMessage = $"Título editado: {model.Title}";
+        var result = await response.Content.ReadFromJsonAsync<Response>();
 
+        responseMessage = result.Message;
 
-        //return response;
+        return result;
     }
 }
