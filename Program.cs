@@ -25,7 +25,6 @@ builder.Services.AddTransient<EmailService>();
 builder.Services.AddBlazoredSessionStorage();
 
 
-
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7103/") });
 
 // Add services to the container.

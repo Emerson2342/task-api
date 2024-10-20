@@ -1,6 +1,6 @@
 
 
-using Blazored.LocalStorage;
+
 using Blazored.SessionStorage;
 using TaskList.Components.Domain.Main.DTOs.UserDTOs;
 using TaskList.Components.Domain.Main.UseCases.ResponseCase;
@@ -22,9 +22,12 @@ public class Authenticationservice
 
 
         var result = await response.Content.ReadFromJsonAsync<Response>();
-        //await _sesionStorage.SetItemAsync("authToken",login);
-
         return result;
+    }
+
+    public async Task StoreTokenAsync(string token)
+    {
+        await _sesionStorage.SetItemAsync("authToken", token);
     }
 
     public async Task<string> GetTokenAsync()
