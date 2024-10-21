@@ -3,6 +3,7 @@
 @using TaskList.Components.Domain.Main.DTOs.UserDTOs
 @using TaskList.Components.Domain.Main.UseCases.ResponseCase
 @using Blazored.SessionStorage
+@rendermode InteractiveServer
 
 @inject NavigationManager NavManager
 @inject AppDbContext Context
@@ -43,11 +44,9 @@
 
 @if (!string.IsNullOrEmpty(responseMessage))
 {
-
     <div class="alert alert-info mt-3 mx-auto text-center" style="width:50%;">
         @responseMessage
     </div>
-
 }
 
 @code {
@@ -59,62 +58,20 @@
     string tokenStored = string.Empty;
     private string responseMessage = string.Empty;
 
-    private bool isDomReady = false;
-
-
-    // private async Task<Response> HandleSubmit()
-    // {
-    //     var result = await Authenticationservice.Login(model);
-    //     token = result.Token;
-
-    //     await Authenticationservice.StoreTokenAsync(token);
-    //     responseMessage = result.Message + $" Token armazenado: {tokenStored}";
-
-    //     return result;
-    // }
     private async Task<Response> HandleSubmit()
     {
-        var result = await Authenticationservice.Login(model); 
-        token = result.Token; 
+        var result = await Authenticationservice.Login(model);
+        token = result.Token;
+
+        responseMessage = result.Message;
         if (result.IsSuccess)
         {
-           
             await Authenticationservice.StoreTokenAsync(token);
-
-          
-            tokenStored = await Authenticationservice.GetTokenAsync();
-
-            responseMessage = result.Message + $" Token armazenado: {tokenStored}";
-          
-        }
-        else
-        {
-            responseMessage = result.Message; 
+            NavManager.NavigateTo("task-list");
+            //responseMessage = token;
         }
 
-        return result; 
+        return result;
     }
 
-
-
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-
-    //     if (firstRender)
-    //     {
-    //         if (!string.IsNullOrEmpty(token))
-    //         {
-    //             await sessionStorage.SetItemAsync("authToken", token);
-    //             tokenStored = await sessionStorage.GetItemAsync<string>("authToken");
-    //         }
-    //         else
-    //         {
-    //             responseMessage = "Token não vazio";
-    //         }
-
-    //         token = string.Empty;
-    //         //StateHasChanged();
-    //     }
-
-    // }
 }

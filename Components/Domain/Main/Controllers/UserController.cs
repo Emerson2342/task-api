@@ -56,7 +56,7 @@ namespace TaskList.Components.Domain.Main.Controllers
 
             return Ok(result);
         }
-        [SwaggerOperation(Summary = "Recadastrar senha.", Description = "Endpoint para cadastrar uma nova senha.")]
+        [SwaggerOperation(Summary = "Recadastrar senha.", Description = "Endpoint para cadastrar uma nova senha com link vindo do email.")]
         [HttpPost("reset-password/{token}")]
         public async  Task<IActionResult> ResetPassword(
             [FromRoute] string token,

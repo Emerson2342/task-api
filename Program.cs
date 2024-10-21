@@ -1,5 +1,10 @@
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using TaskList.Components;
 using TaskList.Components.Domain.Extensions;
 using TaskList.Components.Domain.Main.Services;
@@ -25,11 +30,13 @@ builder.Services.AddTransient<EmailService>();
 builder.Services.AddBlazoredSessionStorage();
 
 
+
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7103/") });
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 var app = builder.Build();
 
@@ -47,6 +54,9 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

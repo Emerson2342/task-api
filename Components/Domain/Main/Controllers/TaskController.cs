@@ -8,7 +8,7 @@ using TaskList.Components.Domain.Main.UseCases.Create;
 namespace TaskList.Components.Domain.Main.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("task")]
     public class TaskController : Controller
     {

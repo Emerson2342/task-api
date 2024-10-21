@@ -5,43 +5,36 @@
 @using global::TaskList.Components.Domain.Main.DTOs.TaskDTOs
 @using global::TaskList.Components.Domain.Main.Entities
 @using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
+@* @attribute [RenderModeInteractiveServer] *@
+@rendermode InteractiveServer
 
 
 @inject HttpClient Http;
 
 <h3>Editar Tarefa</h3>
 
-<EditForm Model="model" OnSubmit="HandleEdit" FormName="taskEditForm">
+<EditForm Model="@Model" OnValidSubmit="HandleEdit" FormName="taskEditForm">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="mb-1">
         <label for="Title" class="form-label">Título</label>
-        <InputText class="form-control" placeholder="@modelIn.Title" id="Title" @bind-Value="@model.Title" />
+        <InputText class="form-control" placeHolder="@ModelIn.Title" id="Title" @bind-Value="Model.Title" />
     </div>
     <div class="mb-3">
         <label for="Text" class="form-label">Descrição</label>
-        <InputText class="form-control" placeholder="@modelIn.Description" id="Description"
-                   @bind-Value="model.Description" />
+        <InputText class="form-control" id="Description"
+                   @bind-Value="Model.Description" />
 
     </div>
     <div class="mb-3">
-        <label for="StartTime" class="form-label">Data de Início: @modelIn.StartTime</label>
-        <div>
-            <div>
-                <label for="Deadline" class="form-label">Data do Término: @modelIn.Deadline</label>
-            </div>
-
-        </div>
-    </div>
-    <div class="mb-3">
-        <label for="Deadline" class="form-label">Nova Data de Início</label>
-        <InputDate class="form-control" id="StartTime" @bind-Value="model.StartTime" />
+        <label for="Deadline" class="form-label">Data de Início</label>
+        <InputDate class="form-control" id="StartTime" @bind-Value="Model.StartTime" />
         
     </div>
     <div class="mb-3">
-        <label for="Deadline" class="form-label">Nova Data de Término</label>
-        <InputDate class="form-control" id="Deadline" @bind-Value="model.Deadline" />
+        <label for="Deadline" class="form-label">Data de Término</label>
+        <InputDate class="form-control" id="Deadline" @bind-Value="Model.Deadline" />
     </div>
 
     <button class="btn btn-success" type="submit">Alterar Tarefa</button>
@@ -59,8 +52,8 @@
     public Guid Id { get; set; }
 
     [SupplyParameterFromForm]
-    private RequestTask model { get; set; } = new();
-    private RequestTask modelIn { get; set; } = new();
+    private RequestTask Model { get; set; } = new();
+    private RequestTask ModelIn { get; set; } = new();
 
     private RequestTask taskEdited = new();
     private string? responseMessage;
@@ -71,18 +64,18 @@
         Response result = await response.Content.ReadFromJsonAsync<Response>();
 
 
-        modelIn.Title = result.TaskList.Title;
-        modelIn.Description = result.TaskList.Description;
-        modelIn.StartTime = result.TaskList.StartTime;
-        modelIn.Deadline = result.TaskList.Deadline;
+        Model.Title = result.TaskList.Title;
+        Model.Description = result.TaskList.Description;
+        Model.StartTime = result.TaskList.StartTime;
+        Model.Deadline = result.TaskList.Deadline;
 
         //responseMessage = result.Message;
     }
 
     public async Task<Response> HandleEdit()
-    {
-        model.Id = Id;
-        taskEdited = model;
+    {        
+        Model.Id = Id;
+        taskEdited = Model;
 
         var response = await Http.PostAsJsonAsync("task/edit", taskEdited);
 

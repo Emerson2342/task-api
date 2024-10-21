@@ -1,5 +1,6 @@
 ﻿@page "/task-list"
 
+
 @using Microsoft.EntityFrameworkCore
 @using System.Net.Http.Headers
 @using global::TaskList.Components.Domain.Infra.Data
@@ -8,14 +9,14 @@
 @using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
 @using static global::TaskList.Components.Domain.Main.Entities.TaskEntity
 
-@inject AppDbContext Context
-@inject HttpClient Http
-@inject Authenticationservice authenticationservice
 
-@if (!string.IsNullOrEmpty(token))
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject Authenticationservice Authenticationservice
+
+@if (string.IsNullOrEmpty(token))
 {
-    <p>Acesso restrito</p>
-    <NavLink href="/home" class="btn btn-primary">Login</NavLink>
+   <Authorize />
 }
 else
 {
@@ -53,6 +54,7 @@ else
     </table>
 
     <a href="create-task" class="btn btn-primary"><i class="oi oi-plus"></i> Adicionar Tarefa </a>
+    <NavLink href="/home" @onclick="LogOut" class="btn btn-warning">Sair</NavLink>
 
 
     @if (!string.IsNullOrEmpty(responseMessage))
@@ -69,12 +71,34 @@ else
 
     string responseMessage = string.Empty;
     string token = string.Empty;
+    bool isTokenReady = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var response = await Http.GetAsync("task/list");
-        var result = await response.Content.ReadFromJsonAsync<Response>();
-        _tasks = result.TasksList;
-        responseMessage = result.Message;
+        if (firstRender)
+        {
+            token = await Authenticationservice.GetTokenAsync();
+            await OnInitializedAsync();
+        }
+    }
+
+    private async Task OnInitializedAsync()
+    {
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await client.GetAsync("https://localhost:7103/task/list");
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<Response>();
+            _tasks = result.TasksList;
+            responseMessage = result.Message;
+        }
+        StateHasChanged();
+    }
+
+    private async Task LogOut()
+    {
+        await Authenticationservice.RemoveTokenAsync();
     }
 }

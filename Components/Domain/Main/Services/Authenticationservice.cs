@@ -34,5 +34,9 @@ public class Authenticationservice
     {
         return await _sesionStorage.GetItemAsync<string>("authToken");
     }
+    public async Task RemoveTokenAsync()
+    {
+         await _sesionStorage.RemoveItemAsync("authToken");
+    }
 
 }
