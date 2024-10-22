@@ -42,7 +42,7 @@ public class Authenticationservice
     {
         return await _sesionStorage.GetItemAsync<string>("userId");
     }
-    public async Task RemoveTokenAsync()
+    public async Task Logout()
     {
          await _sesionStorage.RemoveItemAsync("authToken");
          await _sesionStorage.RemoveItemAsync("userId");

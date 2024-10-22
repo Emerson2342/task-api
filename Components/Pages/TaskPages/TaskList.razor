@@ -9,15 +9,11 @@
 @using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
 @using static global::TaskList.Components.Domain.Main.Entities.TaskEntity
 
-
+@inject NavigationManager NavManager
 @rendermode InteractiveServer
 @inject HttpClient Http
 @inject Authenticationservice Authenticationservice
 
-@if (string.IsNullOrEmpty(token))
-{   <Authorize />}
-else
-{
     <h3>Lista de Tarefas</h3>
     <table class="table">
         <thead>
@@ -60,7 +56,6 @@ else
         <div class="alert alert-info mt-3">
             @responseMessage
         </div>
-    }
 }
 
 @code {
@@ -78,6 +73,8 @@ else
         {
             token = await Authenticationservice.GetTokenAsync();
             userId = await Authenticationservice.GetUserIdAsync();
+            if (string.IsNullOrWhiteSpace(token))
+                NavManager.NavigateTo("/authorize");
             await OnInitializedAsync();
         }
     }
@@ -99,6 +96,6 @@ else
 
     private async Task LogOut()
     {
-        await Authenticationservice.RemoveTokenAsync();
+        await Authenticationservice.Logout();
     }
 }

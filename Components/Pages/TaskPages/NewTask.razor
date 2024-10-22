@@ -4,17 +4,13 @@
 @using global::TaskList.Components.Domain.Main.DTOs.TaskDTOs
 @using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
 
+@attribute [Authorize]
 
+@inject NavigationManager NavManager
 @inject HttpClient Http
 @inject Authenticationservice Authenticationservice
 @rendermode InteractiveServer
 
-@if (string.IsNullOrEmpty(token))
-{
-    <Authorize />
-}
-else
-{
     <h3>Criar nova tarefa</h3>
 
     <EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskForm">
@@ -50,7 +46,7 @@ else
             @responseMessage
         </div>
     }
-}
+
 
 @code {
 
@@ -68,6 +64,8 @@ else
         {
             userId = await Authenticationservice.GetUserIdAsync();
             token = await Authenticationservice.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+                NavManager.NavigateTo("/authorize");
             StateHasChanged();
         }
     }
@@ -92,13 +90,6 @@ else
         var result = await response.Content.ReadFromJsonAsync<Response>();
         responseMessage = result.Message;
 
-        if (result.IsSuccess)
-        {
-            model.Title = string.Empty;
-            model.Description = string.Empty;
-            model.StartTime = new(1, 1, 1);
-            model.Deadline = new(1, 1, 1);
-        }
         return result;
 
     }

@@ -1,7 +1,5 @@
 ﻿using Swashbuckle.AspNetCore.Annotations;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using TaskList.Components.Domain.Shared.Entities;
 
 namespace TaskList.Components.Domain.Main.DTOs.TaskDTOs
 {
@@ -27,12 +25,12 @@ namespace TaskList.Components.Domain.Main.DTOs.TaskDTOs
 
         [JsonPropertyName("startTime")]
         [SwaggerSchema("Data do início da tarefa.")]
-        public DateOnly StartTime { get; set; }
+        public DateOnly StartTime { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
 
         [JsonPropertyName("deadLine")]
         [SwaggerSchema("Data do término da tarefa.")]
-        public DateOnly Deadline { get; set; }
+        public DateOnly Deadline { get; set; } = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
 
         [JsonConstructor]
         public RequestTask()
