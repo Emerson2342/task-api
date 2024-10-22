@@ -51,9 +51,10 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<TaskEntity>> ListTasks()
+        public async Task<List<TaskEntity>> ListTasks(Guid userId)
         {
-            return await _context.Tasks.ToListAsync();
+
+            return await _context.Tasks.Where(t => t.UserId == userId).ToListAsync();
         }
 
     }

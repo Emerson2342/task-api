@@ -8,7 +8,7 @@ using TaskList.Components.Domain.Main.UseCases.Create;
 namespace TaskList.Components.Domain.Main.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("task")]
     public class TaskController : Controller
     {
@@ -49,10 +49,10 @@ namespace TaskList.Components.Domain.Main.Controllers
         }
 
         [SwaggerOperation(Summary = "Listar tarefas.", Description = "Endpoint para listas todas as tarefas")]
-        [HttpGet("list")]
-        public async Task<IActionResult> ListTask()
+        [HttpGet("list/{userId}")]
+        public async Task<IActionResult> ListTask([FromRoute] Guid userId)
         {
-            var result = await _handler.ListTask();
+            var result = await _handler.ListTask(userId);
 
             return Ok(result);
 

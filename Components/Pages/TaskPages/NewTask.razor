@@ -1,47 +1,55 @@
 ﻿@page "/create-task"
+@using System.Net.Http.Headers
 @using global::TaskList.Components.Domain.Infra.Data
 @using global::TaskList.Components.Domain.Main.DTOs.TaskDTOs
 @using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
 
 
-
-@inject AppDbContext Context
 @inject HttpClient Http
+@inject Authenticationservice Authenticationservice
+@rendermode InteractiveServer
 
-<h3>Criar nova tarefa</h3>
-
-<EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskForm">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="mb-1">
-        <label for="Title" class="form-label">Título</label>
-        <InputText class="form-control" id="Title" @bind-Value="model.Title" />
-    </div>
-    <div class="mb-3">
-        <label for="Text" class="form-label">Descrição</label>
-        <InputText class="form-control" id="Description" @bind-Value="model.Description" />
-
-    </div>
-    <div class="mb-3">
-        <label for="StartTime" class="form-label">Data de Início</label>
-        <InputDate class="form-control" id="Password" @bind-Value="model.StartTime" />
-
-    </div>
-    <div class="mb-3">
-        <label for="Deadline" class="form-label">Data do Término</label>
-        <InputDate class="form-control" id="Deadline" @bind-Value="model.Deadline" />
-
-    </div>
-
-    <button class="btn btn-success" type="submit">Criar Tarefa</button>
-</EditForm>
-
-@if (!string.IsNullOrEmpty(responseMessage))
+@if (string.IsNullOrEmpty(token))
 {
-    <div class="alert alert-info mt-3">
-        @responseMessage
-    </div>
+    <Authorize />
+}
+else
+{
+    <h3>Criar nova tarefa</h3>
+
+    <EditForm Model="model" OnSubmit="HandleSubmit" FormName="taskForm">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-1">
+            <label for="Title" class="form-label">Título</label>
+            <InputText class="form-control" id="Title" @bind-Value="model.Title" />
+        </div>
+        <div class="mb-3">
+            <label for="Text" class="form-label">Descrição</label>
+            <InputText class="form-control" id="Description" @bind-Value="model.Description" />
+
+        </div>
+        <div class="mb-3">
+            <label for="StartTime" class="form-label">Data de Início</label>
+            <InputDate class="form-control" id="Password" @bind-Value="model.StartTime" />
+
+        </div>
+        <div class="mb-3">
+            <label for="Deadline" class="form-label">Data do Término</label>
+            <InputDate class="form-control" id="Deadline" @bind-Value="model.Deadline" />
+
+        </div>
+
+        <button class="btn btn-success" type="submit">Criar Tarefa</button>
+    </EditForm>
+
+    @if (!string.IsNullOrEmpty(responseMessage))
+    {
+        <div class="alert alert-info mt-3">
+            @responseMessage
+        </div>
+    }
 }
 
 @code {
@@ -49,13 +57,31 @@
     [SupplyParameterFromForm]
     private RequestTask model { get; set; } = new();
 
+    private string token = string.Empty;
+    private string userId = string.Empty;
 
     private string? responseMessage;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            userId = await Authenticationservice.GetUserIdAsync();
+            token = await Authenticationservice.GetTokenAsync();
+            StateHasChanged();
+        }
+    }
+
     private async Task<Response> HandleSubmit()
     {
-        model.UserId = Guid.Parse("f537b3ee-cd9f-4277-b1aa-6a4c35713a2d");
-        var response = await Http.PostAsJsonAsync("task/create", model);
+
+        model.UserId = Guid.Parse(userId);
+        var url = "https://localhost:7103/task/create";
+
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await Http.PostAsJsonAsync(url, model);
+
 
         if (model.StartTime == null || model.Deadline == null)
         {
@@ -66,15 +92,14 @@
         var result = await response.Content.ReadFromJsonAsync<Response>();
         responseMessage = result.Message;
 
-        if(result.IsSuccess)
+        if (result.IsSuccess)
         {
             model.Title = string.Empty;
             model.Description = string.Empty;
-            model.StartTime = new(1,1,1);
-            model.Deadline = new(1,1,1);
+            model.StartTime = new(1, 1, 1);
+            model.Deadline = new(1, 1, 1);
         }
-
         return result;
-  
+
     }
 }

@@ -33,9 +33,9 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 userPassword = new Password(newUser.Password);
 
                 User user = new(newUser.Name, userEmail, userPassword);
-                string link = $"<a href='https://localhost:7103/user/confirmation/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
+                string link = $"<a href='https://localhost:7103/confirmation/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
                     $"<br>Se preferir, cole isso no seu navegador <br> " +
-                    $"https://localhost:7103/user/confirmation/{user.Token}";
+                    $"https://localhost:7103/confirmation/{user.Token}";
 
                 var email = new EmailService();
 
@@ -86,7 +86,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
 
             var token = _tokenService.CreateToken(user);
 
-            return new Response("Login efetuado com sucesso!", token);
+            return new Response("Login efetuado com sucesso!", user, token);
         }
         public async Task<Response> ChangePasswordLogged(string userToken, RequestPassword newPassword)
         {

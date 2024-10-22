@@ -7,8 +7,8 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
     public class Response : Shared.UseCases.Response
     {
 
-        [JsonPropertyName("responseDataUser")]
-        public User? ResponseDataUser { get; set; }
+        [JsonPropertyName("userInfo")]
+        public UserResponse User { get; set; } = new UserResponse();
 
         [JsonPropertyName("taskList")]
         public TaskEntity? TaskList { get; set; }
@@ -16,36 +16,22 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
         [JsonPropertyName("tasksList")]
         public List<TaskEntity>? TasksList { get; set; }
 
-        [JsonPropertyName("token")]
-        public string? Token { get; set; }
-
-        //[JsonConstructor]
         public Response() { }
 
-
-       // [JsonConstructor]
-        //not succesfull
         public Response(string massage, int status)
         {
             Message = massage;
             Status = status;
         }
-
-        //[JsonConstructor]
-        //succesfull
-        public Response(string message, User responseData)
+        public Response(string message, User user, string token)
         {
             Message = message;
             Status = 201;
-            ResponseDataUser = responseData;
-        }
-        
-        //[JsonConstructor]
-        public Response(string message, string token)
-        {
-            Message = message;
-            Status = 201;
-            Token = token;
+            User.Name = user.Name;
+            User.UserId = user.Id;
+            User.Token = token;
+            User.IsEmailConfirmed = user.IsEmailConfirmed;
+            User.Email = user.Email;
         }
 
         //[JsonConstructor]

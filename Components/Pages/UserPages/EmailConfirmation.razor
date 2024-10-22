@@ -1,0 +1,44 @@
+﻿@page "/confirmation/{token}"
+@using System.Net.Http.Headers
+@using TaskList.Components.Domain.Main.UseCases.ResponseCase
+
+
+@inject HttpClient Http
+@inject Authenticationservice Authenticationservice
+@rendermode InteractiveServer
+
+
+<h3>Confirmação de Conta</h3>
+
+@if (!string.IsNullOrEmpty(responseMessage))
+{
+    <div class="alert alert-info mt-3">
+        @responseMessage
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public string Token { get; set; } = string.Empty;
+
+    private string tokenUser = string.Empty;
+
+    private string responseMessage = string.Empty;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var url = $"https://localhost:7103/user/confirmation/{Token}";
+
+            var response = await Http.GetAsync(url);
+            var result = await response.Content.ReadFromJsonAsync<Response>();
+
+            responseMessage = result.Message;
+            StateHasChanged();
+        }
+    }
+
+}

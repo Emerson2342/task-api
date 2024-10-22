@@ -65,18 +65,17 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             return new Response("Tarefa removida com sucesso!", 201);
         }
 
-        public async Task<Response> ListTask()
+        public async Task<Response> ListTask(Guid userId)
         {
             try
             {
-                List<TaskEntity> tasks = await _repository.ListTasks();
+                List<TaskEntity> tasks = await _repository.ListTasks(userId);
                 return new Response(null, tasks);
             }
             catch
             {
                 return new Response("Erro ao listar as atividades!", 500);
             }
-
         }
 
         public async Task<Response> GetTask(Guid id)

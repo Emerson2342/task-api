@@ -15,9 +15,7 @@
 @inject Authenticationservice Authenticationservice
 
 @if (string.IsNullOrEmpty(token))
-{
-   <Authorize />
-}
+{   <Authorize />}
 else
 {
     <h3>Lista de Tarefas</h3>
@@ -71,6 +69,7 @@ else
 
     string responseMessage = string.Empty;
     string token = string.Empty;
+    string userId = string.Empty;
     bool isTokenReady = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -78,16 +77,17 @@ else
         if (firstRender)
         {
             token = await Authenticationservice.GetTokenAsync();
+            userId = await Authenticationservice.GetUserIdAsync();
             await OnInitializedAsync();
         }
     }
 
     private async Task OnInitializedAsync()
     {
-        using var client = new HttpClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+       
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await client.GetAsync("https://localhost:7103/task/list");
+        var response = await Http.GetAsync($"https://localhost:7103/task/list/{userId}");
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<Response>();

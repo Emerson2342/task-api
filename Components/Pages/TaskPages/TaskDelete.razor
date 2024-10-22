@@ -1,6 +1,7 @@
 ﻿@page "/task-list/delete/{id:guid}"
 
 
+@using System.Net.Http.Headers
 @using global::TaskList.Components.Domain.Infra.Data
 @using global::TaskList.Components.Domain.Main.DTOs.TaskDTOs
 @using global::TaskList.Components.Domain.Main.Entities
@@ -10,59 +11,76 @@
 
 
 @inject HttpClient Http;
+@inject Authenticationservice Authenticationservice
+@rendermode InteractiveServer
 
-<h3>Deseja apagar a tarefa "@model.Title"?</h3>
-
-<EditForm Model="model" OnSubmit="HandleDelete" FormName="taskEditForm">
-
-    <div class="mb-1">
-        <label for="Title" class="form-label">Título</label>
-    <InputText readonly class="form-control" id="Title" @bind-Value="model.Title" />
-    </div>
-    <div class="mb-3">
-        <label for="Text" class="form-label">Descrição</label>
-    <InputText readonly class="form-control" id="Description" @bind-Value="model.Description" />
-
-    </div>
-
-
-<button class="btn btn-success" type="submit">Apagar Tarefa</button>
-</EditForm>
-
-@if (!string.IsNullOrEmpty(responseMessage))
+@if (string.IsNullOrEmpty(token))
 {
-    <div class="alert alert-info mt-3">
-        @responseMessage
-    </div>
+    <Authorize />
 }
+else
+{
+    <h3>Deseja apagar a tarefa "@model.Title"?</h3>
 
+    <EditForm Model="model" OnSubmit="HandleDelete" FormName="taskEditForm">
 
+        <div class="mb-1">
+            <label for="Title" class="form-label">Título</label>
+            <InputText readonly class="form-control" id="Title" @bind-Value="model.Title" />
+        </div>
+        <div class="mb-3">
+            <label for="Text" class="form-label">Descrição</label>
+            <InputText readonly class="form-control" id="Description" @bind-Value="model.Description" />
+        </div>
+        <button class="btn btn-success" type="submit">Apagar Tarefa</button>
+    </EditForm>
+
+    @if (!string.IsNullOrEmpty(responseMessage))
+    {
+        <div class="alert alert-info mt-3">
+            @responseMessage
+        </div>
+    }
+}
 
 @code {
     [Parameter]
     public Guid Id { get; set; }
 
     private RequestTask model = new();
-    //private TaskEntity model = new();
-    private RequestTask taskToDelete = new();
     private string? responseMessage;
+    private string token = string.Empty;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var response = await Http.GetAsync($"task/task/{Id}");
+        if (firstRender)
+        {
+            token = await Authenticationservice.GetTokenAsync();
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            OnInitializedAsync();
+        }
+    }
+
+
+    private async Task OnInitializedAsync()
+    {       
+        var url = $"https://localhost:7103/task/task/{Id}";
+
+        var response = await Http.GetAsync(url);
         Response result = await response.Content.ReadFromJsonAsync<Response>();
-        //model.Id = result.TaskList.Id;
+       
         model.Title = result.TaskList.Title;
         model.Description = result.TaskList.Description;
 
         responseMessage = result.Message;
+        StateHasChanged();
     }
 
 
     private async Task<Response> HandleDelete()
     {
-        taskToDelete.Id = Id;
-        var response = await Http.PostAsJsonAsync("task/delete", taskToDelete);
+        model.Id = Id;
+        var response = await Http.PostAsJsonAsync("task/delete", model);
 
         var result = await response.Content.ReadFromJsonAsync<Response>();
         responseMessage = result.Message;

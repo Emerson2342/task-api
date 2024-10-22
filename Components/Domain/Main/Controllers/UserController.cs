@@ -34,7 +34,6 @@ namespace TaskList.Components.Domain.Main.Controllers
             return Ok(result);
         }
 
-
         [SwaggerOperation(Summary = "Alterar senha.", Description = "Altera a senha do usuário autenticado.")]
         [Authorize]
         [HttpPost("change-password-in")]

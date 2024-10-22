@@ -1,6 +1,10 @@
 ﻿@page "/home"
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Identity
 @using TaskList.Components.Domain.Infra.Data
 @using TaskList.Components.Domain.Main.DTOs.UserDTOs
+@using TaskList.Components.Domain.Main.Entities
 @using TaskList.Components.Domain.Main.UseCases.ResponseCase
 @using Blazored.SessionStorage
 @rendermode InteractiveServer
@@ -55,20 +59,28 @@
     private RequestLogin model { get; set; } = new();
 
     string token = string.Empty;
+    Guid userId;
     string tokenStored = string.Empty;
+    string userIdStored = string.Empty;
     private string responseMessage = string.Empty;
 
     private async Task<Response> HandleSubmit()
     {
         var result = await Authenticationservice.Login(model);
-        token = result.Token;
+        token = result.User.Token;
+        userId = result.User.UserId;
 
         responseMessage = result.Message;
         if (result.IsSuccess)
         {
             await Authenticationservice.StoreTokenAsync(token);
+            await Authenticationservice.StoreUserIdAsync(userId);
+
+            var id = await Authenticationservice.GetUserIdAsync();
+
+            
             NavManager.NavigateTo("task-list");
-            //responseMessage = token;
+            //responseMessage = $"{id}";
         }
 
         return result;
