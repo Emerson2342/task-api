@@ -56,6 +56,17 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 return new Response($"Erro ao criar usuário. {ex.Message}", 500);
             }
         }
+
+        public async Task<Response> GetUser(string userId)
+        {
+            var user = await _repository.GetUserByTokenAsync(userId);
+
+            if (user == null)
+                return new Response($"Usuário inválido!", 400);
+
+
+            return new Response("Usuário válido!", user, null);
+        }
         public async Task<Response> ConfirmEmail(string token)
         {
             var user = await _repository.GetUserByTokenFromRouteAsync(token);

@@ -33,6 +33,7 @@ else
             <InputText readonly class="form-control" id="Description" @bind-Value="model.Description" />
         </div>
         <button class="btn btn-success" type="submit">Apagar Tarefa</button>
+        <a class="btn btn-warning" href="/task-list">Voltar</a>
     </EditForm>
 
     @if (!string.IsNullOrEmpty(responseMessage))

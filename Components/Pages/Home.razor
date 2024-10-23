@@ -73,14 +73,15 @@
         responseMessage = result.Message;
         if (result.IsSuccess)
         {
-            await Authenticationservice.StoreTokenAsync(token);
+            var res = await Authenticationservice.StoreTokenAsync(token);
             await Authenticationservice.StoreUserIdAsync(userId);
-
             var id = await Authenticationservice.GetUserIdAsync();
 
-            
+            if(res)
+                NavManager.NavigateTo("/authorize");
+
             NavManager.NavigateTo("task-list");
-            //responseMessage = $"{id}";
+
         }
 
         return result;

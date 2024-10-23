@@ -4,6 +4,8 @@
 using Blazored.SessionStorage;
 using TaskList.Components.Domain.Main.DTOs.UserDTOs;
 using TaskList.Components.Domain.Main.UseCases.ResponseCase;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Mvc;
 
 public class Authenticationservice
 {
@@ -25,9 +27,11 @@ public class Authenticationservice
         return result;
     }
 
-    public async Task StoreTokenAsync(string token)
+    public async Task<bool> StoreTokenAsync(string token)
     {
+        var isValid = ValidateToken(token);
         await _sesionStorage.SetItemAsync("authToken", token);
+        return isValid;
     }
     public async Task StoreUserIdAsync(Guid userId)
     {
@@ -44,8 +48,30 @@ public class Authenticationservice
     }
     public async Task Logout()
     {
-         await _sesionStorage.RemoveItemAsync("authToken");
-         await _sesionStorage.RemoveItemAsync("userId");
+        await _sesionStorage.RemoveItemAsync("authToken");
+        await _sesionStorage.RemoveItemAsync("userId");
+    }
+
+    public bool ValidateToken(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        try
+        {
+            var jwtToken = handler.ReadJwtToken(token);
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "subject");
+
+            if (userIdClaim != null)
+            {
+                var userId = userIdClaim.Value;
+
+                return true;
+            }
+        }
+        catch
+        {
+            return false;
+        }
+        return false;
     }
 
 }

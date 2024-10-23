@@ -6,7 +6,7 @@
 @using global::TaskList.Components.Domain.Main.DTOs.TaskDTOs
 @using global::TaskList.Components.Domain.Main.Entities
 @using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
-@* @attribute [RenderModeInteractiveServer] *@
+
 @rendermode InteractiveServer
 @inject HttpClient Http;
 @inject Authenticationservice Authenticationservice
@@ -45,6 +45,7 @@ else
         </div>
 
         <button class="btn btn-success" type="submit">Alterar Tarefa</button>
+        <a class="btn btn-primary" href="/task-list">Voltar</a>
     </EditForm>
 
      

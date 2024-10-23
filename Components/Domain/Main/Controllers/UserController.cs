@@ -34,6 +34,15 @@ namespace TaskList.Components.Domain.Main.Controllers
             return Ok(result);
         }
 
+        [SwaggerOperation(Summary = "Confirmar conta.", Description = "Confirma a conta de um usuário com o link enviado por email.")]
+        [HttpGet("get-user")]
+        public async Task<IActionResult> GetUser([FromHeader] string userId)
+        {
+            var result = await _handler.GetUser(userId);
+
+            return Ok(result);
+        }
+
         [SwaggerOperation(Summary = "Alterar senha.", Description = "Altera a senha do usuário autenticado.")]
         [Authorize]
         [HttpPost("change-password-in")]
