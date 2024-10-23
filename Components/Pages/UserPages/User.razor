@@ -55,26 +55,35 @@
     [SupplyParameterFromForm]
     private RequestCreateUser model { get; set; } = new();
 
-    // protected override void OnInitialized() => model ??= new();
-
-    // public string name = "vazio";
-    // public string email = "vazio";
-    // public string password= "vazio";
 
     private string? responseMessage;
 
     private async Task<Response> HandleSubmit()
     {
-        var response = await Http.PostAsJsonAsync("user/create", model);
+        try
+        {
+            var response = await Http.PostAsJsonAsync("user/create", model);
 
-        var result = await response.Content.ReadFromJsonAsync<Response>();
+            var result = await response.Content.ReadFromJsonAsync<Response>();
 
-        responseMessage = result.Message;
-        model.Name = string.Empty;
-        model.Email = string.Empty;
-        model.Password = string.Empty;
+            if (result == null)
+            {
+                responseMessage = "Erro ao ler os dados JSON";
+                return new Response("Erro ao ler os dados do JSON", 400);
+            }
+            responseMessage = result.Message;
+            model.Name = string.Empty;
+            model.Email = string.Empty;
+            model.Password = string.Empty;
 
-        return result;
+            return result;
+        }catch (Exception e)
+        {
+            responseMessage = $"Erro ao acessar - {e.Message}";
+            return new Response($"Erro ao acessar - {e.Message}", 400);
+        }
+
+        
 
     }
 }

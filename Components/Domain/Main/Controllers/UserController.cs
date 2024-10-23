@@ -34,7 +34,9 @@ namespace TaskList.Components.Domain.Main.Controllers
             return Ok(result);
         }
 
+        
         [SwaggerOperation(Summary = "Confirmar conta.", Description = "Confirma a conta de um usuário com o link enviado por email.")]
+        [Authorize]
         [HttpGet("get-user")]
         public async Task<IActionResult> GetUser([FromHeader] string userId)
         {

@@ -12,16 +12,21 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
     {
         private readonly IUserRepository _repository;
         private readonly TokenService _tokenService;
-
-        public UserHandler(IUserRepository repository, TokenService tokenService)
+        private readonly IConfiguration _configuration;
+      
+        public UserHandler(IConfiguration configuration
+, IUserRepository repository, TokenService tokenService)
         {
             _repository = repository;
             _tokenService = tokenService;
+            _configuration = configuration;
         }
 
         public async Task<Response> CreateUser(RequestCreateUser newUser)
         {
             var exists = await _repository.AnyAsync(newUser.Email);
+
+
 
             if (exists)
                 return new Response("Já existe uma conta com esse email", 401);
@@ -33,9 +38,9 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 userPassword = new Password(newUser.Password);
 
                 User user = new(newUser.Name, userEmail, userPassword);
-                string link = $"<a href='https://localhost:7103/confirmation/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
+                string link = $"<a href='https://{_configuration["IpConfig:IpAddress"]}/confirmation/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
                     $"<br>Se preferir, cole isso no seu navegador <br> " +
-                    $"https://localhost:7103/confirmation/{user.Token}";
+                    $"https://{_configuration["IpConfig:IpAddress"]}/confirmation/{user.Token}";
 
                 var email = new EmailService();
 
@@ -65,7 +70,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 return new Response($"Usuário inválido!", 400);
 
 
-            return new Response("Usuário válido!", user, null);
+            return new Response("Usuário válido!", user);
         }
         public async Task<Response> ConfirmEmail(string token)
         {
@@ -105,7 +110,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(userToken);
 
-            string id = jwtToken.Claims.FirstOrDefault(c => c.Type == "subject")?.Value;
+            string id = jwtToken.Claims.FirstOrDefault(c => c.Type == "subject")?.Value ?? string.Empty;
 
             var user = await _repository.GetUserByTokenAsync(id);
 
@@ -134,9 +139,9 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             _repository.UpdateUser(user);
             await _repository.SaveChangesAsync();
 
-            string link = $"<a href='https://localhost:7103/reset-password/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
+            string link = $"<a href='https://{_configuration["IpConfig:IpAddress"]}/reset-password/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
                     $"<br>Se preferir, cole isso no seu navegador <br> " +
-                    $"https://localhost:7103/reset-password/{user.Token}";
+                    $"https://{_configuration["IpConfig:IpAddress"]}/reset-password/{user.Token}";
 
             EmailService email = new();
 

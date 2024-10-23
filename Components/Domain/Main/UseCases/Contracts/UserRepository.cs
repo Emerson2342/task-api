@@ -19,22 +19,22 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(user => user.Email.Address == email);
+            return await _context.Users.FirstOrDefaultAsync(user => user.Email.Address == email)?? new ();
         }
 
         public async Task<User> GetUserByIdAsync(string id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id) ?? new();
         }
 
         public async Task<User> GetUserByTokenFromRouteAsync(string token)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Token == token);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Token == token) ?? new();
         }
 
         public async Task<User> GetUserByTokenAsync(string token)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == token);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == token) ?? new();
         }
 
         public async Task SaveChangesAsync()

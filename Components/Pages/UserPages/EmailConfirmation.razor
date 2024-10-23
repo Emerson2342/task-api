@@ -8,13 +8,17 @@
 @rendermode InteractiveServer
 
 
-<h3>Confirmação de Conta</h3>
+<h3 style="width:100%;text-align:center;font-weight:900;font-size:30px">Confirmação de Conta</h3>
 
 @if (!string.IsNullOrEmpty(responseMessage))
 {
     <div class="alert alert-info mt-3">
         @responseMessage
     </div>
+}
+@if (buttonHome)
+{
+    <a style="width:30%;margin-left:35%;margin-top:5%" href="/home" class="btn btn-success">Página Inicial</a>
 }
 
 @code {
@@ -25,6 +29,7 @@
     private string tokenUser = string.Empty;
 
     private string responseMessage = string.Empty;
+    private bool buttonHome = false;
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -35,6 +40,14 @@
 
             var response = await Http.GetAsync(url);
             var result = await response.Content.ReadFromJsonAsync<Response>();
+            if(result == null)
+            {
+                responseMessage = "Erro ao ler os dados JSON";
+                return;
+            }
+
+            if (result.IsSuccess)
+                buttonHome = true;
 
             responseMessage = result.Message;
             StateHasChanged();

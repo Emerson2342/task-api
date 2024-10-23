@@ -10,10 +10,10 @@ namespace TaskList.Components.Domain.Main.Entities
         [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
         [JsonPropertyName("email")]
-        public Email? Email { get; set; }
-       
+        public Email Email { get; set; } = new(string.Empty);
+
         [JsonPropertyName("token")]
-        public string? Token { get; set; }
+        public string Token { get; set; } = string.Empty;
         
         [JsonPropertyName("isEmailConfirmed")]
         public bool IsEmailConfirmed { get; set; } = false;

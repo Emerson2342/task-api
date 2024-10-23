@@ -11,12 +11,12 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
         public UserResponse User { get; set; } = new UserResponse();
 
         [JsonPropertyName("taskList")]
-        public TaskEntity? TaskList { get; set; }
+        public TaskEntity TaskList { get; set; } = new();
 
         [JsonPropertyName("tasksList")]
-        public List<TaskEntity>? TasksList { get; set; }
+        public List<TaskEntity> TasksList { get; set; } = [];
 
-        public Response() { }
+        protected Response() { }
 
         public Response(string massage, int status)
         {
@@ -30,6 +30,15 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
             User.Name = user.Name;
             User.UserId = user.Id;
             User.Token = token;
+            User.IsEmailConfirmed = user.IsEmailConfirmed;
+            User.Email = user.Email;
+        }
+        public Response(string message, User user)
+        {
+            Message = message;
+            Status = 201;
+            User.Name = user.Name;
+            User.UserId = user.Id;
             User.IsEmailConfirmed = user.IsEmailConfirmed;
             User.Email = user.Email;
         }

@@ -70,7 +70,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             try
             {
                 List<TaskEntity> tasks = await _repository.ListTasks(userId);
-                return new Response(null, tasks);
+                return new Response(string.Empty, tasks);
             }
             catch
             {

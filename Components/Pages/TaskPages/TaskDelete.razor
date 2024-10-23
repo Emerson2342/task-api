@@ -58,35 +58,66 @@ else
         {
             token = await Authenticationservice.GetTokenAsync();
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            OnInitializedAsync();
+            await OnInitializedAsync();
         }
     }
 
+    new private async Task OnInitializedAsync()
+    {
+        try
+        {
+            var url = $"https://localhost:7103/task/task/{Id}";
 
-    private async Task OnInitializedAsync()
-    {       
-        var url = $"https://localhost:7103/task/task/{Id}";
+            var response = await Http.GetAsync(url);
+            var result = await response.Content.ReadFromJsonAsync<Response>();
+            if (result == null)
+            {
+                responseMessage = "Erro ao ler os dados JSON";
+                return;
+            }
 
-        var response = await Http.GetAsync(url);
-        Response result = await response.Content.ReadFromJsonAsync<Response>();
-       
-        model.Title = result.TaskList.Title;
-        model.Description = result.TaskList.Description;
+            model.Title = result.TaskList.Title;
+            model.Description = result.TaskList.Description;
 
-        responseMessage = result.Message;
-        StateHasChanged();
+            responseMessage = result.Message;
+            StateHasChanged();
+
+        }
+        catch (Exception e)
+        {
+            responseMessage = $"Erro ao acessar - {e.Message}";
+            return;
+        }
+
+
+
     }
 
 
     private async Task<Response> HandleDelete()
     {
-        model.Id = Id;
-        var response = await Http.PostAsJsonAsync("task/delete", model);
 
-        var result = await response.Content.ReadFromJsonAsync<Response>();
-        responseMessage = result.Message;
+        try
+        {
+            model.Id = Id;
+            var response = await Http.PostAsJsonAsync("task/delete", model);
 
-        NavManager.NavigateTo("task-list");
-        return result;
+            var result = await response.Content.ReadFromJsonAsync<Response>();
+            if (result == null)
+            {
+                responseMessage = "Erro ao ler os dados JSON";
+                return new Response("Erro ao ler os dados do JSON", 400);
+            }
+            responseMessage = result.Message;
+
+            NavManager.NavigateTo("task-list");
+            return result;
+        }
+        catch (Exception e)
+        {
+            responseMessage = $"Erro ao acessar - {e.Message}";
+            return new Response($"Erro ao acessar - {e.Message}", 400);
+        }
+
     }
 }

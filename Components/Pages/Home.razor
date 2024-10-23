@@ -77,11 +77,12 @@
             await Authenticationservice.StoreUserIdAsync(userId);
             var id = await Authenticationservice.GetUserIdAsync();
 
-            if(res)
+            if (res)
+            { NavManager.NavigateTo("/task-list");}
+            else
+            {
                 NavManager.NavigateTo("/authorize");
-
-            NavManager.NavigateTo("task-list");
-
+            }
         }
 
         return result;

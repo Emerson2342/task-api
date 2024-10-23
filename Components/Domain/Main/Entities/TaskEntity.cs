@@ -13,19 +13,19 @@ namespace TaskList.Components.Domain.Main.Entities
         public Guid UserId { get; set; }
 
         [JsonPropertyName("user")]
-        public User User { get; set; }
+        public User User { get; set; } = new();
 
         [JsonPropertyName("title")]
-        public string Title { get; set; }
+        public string Title { get; set; } =string.Empty;
 
         [JsonPropertyName("description")]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         [JsonPropertyName("startTime")]
-        public DateOnly StartTime { get; set; }
+        public DateOnly StartTime { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
         [JsonPropertyName("deadLine")]
-        public DateOnly Deadline { get; set; }
+        public DateOnly Deadline { get; set; } = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
 
         [JsonConstructor]
         protected TaskEntity() { }
@@ -44,11 +44,11 @@ namespace TaskList.Components.Domain.Main.Entities
 
         public static TaskResult New(Guid userId, string title, string description, DateOnly startTime, DateOnly deadline)
         {
-            if (string.IsNullOrEmpty(title)) return new TaskResult(new Response("Favor preencher o título", 400), null);
+            if (string.IsNullOrEmpty(title)) return new TaskResult(new Response("Favor preencher o título", 400));
 
-            if (string.IsNullOrEmpty(description)) return new TaskResult(new Response("Favor preencher a descrição da atividade", 400), null);
-            if (startTime < DateOnly.FromDateTime(DateTime.UtcNow)) return new TaskResult(new Response("Data inicial inválida", 400), null);
-            if (deadline < startTime) return new TaskResult(new Response("Data final da atividade não pode ser menor que a data inicial!", 400), null);
+            if (string.IsNullOrEmpty(description)) return new TaskResult(new Response("Favor preencher a descrição da atividade", 400));
+            if (startTime < DateOnly.FromDateTime(DateTime.UtcNow)) return new TaskResult(new Response("Data inicial inválida", 400));
+            if (deadline < startTime) return new TaskResult(new Response("Data final da atividade não pode ser menor que a data inicial!", 400));
 
             TaskEntity task = new(userId, title, description, startTime, deadline);
 
@@ -64,11 +64,11 @@ namespace TaskList.Components.Domain.Main.Entities
             originalTask.StartTime = editTask.StartTime == defaultDate ? originalTask.StartTime : editTask.StartTime;
             originalTask.Deadline = editTask.Deadline == defaultDate ? originalTask.Deadline : editTask.Deadline;
 
-            if (originalTask?.StartTime < DateOnly.FromDateTime(DateTime.UtcNow))
-                return new TaskResult(new Response("Data inicial inválida", 400), null);
+            if (originalTask.StartTime < DateOnly.FromDateTime(DateTime.UtcNow))
+                return new TaskResult(new Response("Data inicial inválida", 400));
 
-            if (originalTask?.Deadline < originalTask?.StartTime)
-                return new TaskResult(new Response("Data final da atividade não pode ser menor que a data inicial!", 400), null);
+            if (originalTask.Deadline < originalTask.StartTime)
+                return new TaskResult(new Response("Data final da atividade não pode ser menor que a data inicial!", 400));
 
             return new TaskResult(new Response("Tarefa editada com sucesso!", originalTask), originalTask);
         }
@@ -76,14 +76,18 @@ namespace TaskList.Components.Domain.Main.Entities
         public class TaskResult
         {
             public Response Response { get; set; }
-            public TaskEntity TaskEntity { get; set; }
+            public TaskEntity TaskEntity { get; set; } = new();
            
             public TaskResult(Response response, TaskEntity taskEntity)
             {
                 Response = response;
                 TaskEntity = taskEntity;
             }
-                      
+            public TaskResult(Response response)
+            {
+                Response = response;
+            }
+
         }
 
         public class TasksResult

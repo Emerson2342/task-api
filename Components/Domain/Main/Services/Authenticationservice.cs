@@ -24,6 +24,8 @@ public class Authenticationservice
 
 
         var result = await response.Content.ReadFromJsonAsync<Response>();
+        if (result == null)
+            return new Response("Erro ao converter o Json", 500);
         return result;
     }
 

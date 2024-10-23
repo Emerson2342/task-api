@@ -15,8 +15,8 @@ namespace TaskList.Components.Domain.Main.ValueObjects
         {
             Address = address.Trim().ToLower();
 
-            if (!EmailRegex().IsMatch(Address))
-              throw new Exception(address);
+            //if (!EmailRegex().IsMatch(Address))
+            //  throw new Exception(address);
         }
 
         [GeneratedRegex(Pattern)]

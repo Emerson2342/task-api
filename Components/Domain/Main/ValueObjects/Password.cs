@@ -6,7 +6,7 @@ namespace TaskList.Components.Domain.Main.ValueObjects
 {
     public class Password : ValueObject
     {
-        public string PassWord { get; set; }
+        public string PassWord { get; set; } = string.Empty;
         protected Password() { }
         public Password(string password)
         {          

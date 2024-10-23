@@ -25,12 +25,12 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
 
         public async Task<TaskEntity> GetTaskById(Guid id)
         {
-            return await _context.Tasks.FirstOrDefaultAsync(task => task.Id == id);
+            return await _context.Tasks.FirstOrDefaultAsync(task => task.Id == id) ?? new TaskEntity();
         }
 
         public async Task<TaskEntity> GetTaskByTitle(string title)
         {
-            return await _context.Tasks.FirstOrDefaultAsync(task => task.Title == title);
+            return await _context.Tasks.FirstOrDefaultAsync(task => task.Title == title) ?? new TaskEntity();
         }
 
         public async Task SaveAsync(TaskEntity task)

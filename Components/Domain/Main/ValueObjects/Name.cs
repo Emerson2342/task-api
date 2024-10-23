@@ -2,17 +2,12 @@
 {
     public class Name
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string FirstName { get; set; }  =string.Empty;
+        public string LastName { get; set; } = string.Empty;
         protected Name() { }
 
         public Name(string firstName, string lastName)
         {
-            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
-            {
-                throw new Exception("Favor preencher NOME e SOBRENOME");
-            }
-
             FirstName = firstName;
             LastName = lastName;
         }

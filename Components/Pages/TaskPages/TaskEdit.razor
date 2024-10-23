@@ -48,7 +48,7 @@ else
         <a class="btn btn-primary" href="/task-list">Voltar</a>
     </EditForm>
 
-     
+
 }
 @if (!string.IsNullOrEmpty(responseMessage))
 {
@@ -74,43 +74,62 @@ else
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-        {token = await Authenticationservice.GetTokenAsync();
+        {
+            token = await Authenticationservice.GetTokenAsync();
             await OnInitializedAsync();
         }
     }
-    private async Task OnInitializedAsync()
+    new private async Task OnInitializedAsync()
     {
 
-            var url = $"https://localhost:7103/task/task/{Id}";
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await Http.GetAsync(url);
-            Response? result = await response.Content.ReadFromJsonAsync<Response>();
+        var url = $"https://localhost:7103/task/task/{Id}";
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var response = await Http.GetAsync(url);
+        var result = await response.Content.ReadFromJsonAsync<Response>();
 
+        if (result == null)
+        {
+            responseMessage = "Erro ao ler os dados JSON";
+            return;
+        }
 
-            if(result.TaskList != null)
-            {
-                 Model.Title = result.TaskList.Title;
-                 Model.Description = result.TaskList.Description;
-                 Model.StartTime = result.TaskList.StartTime;
-                 Model.Deadline = result.TaskList.Deadline;
-                StateHasChanged();
-            }
-        
+        if (result.IsSuccess)
+        {
+            Model.Title = result.TaskList.Title;
+            Model.Description = result.TaskList.Description;
+            Model.StartTime = result.TaskList.StartTime;
+            Model.Deadline = result.TaskList.Deadline;
+            StateHasChanged();
+        }
     }
 
     public async Task<Response> HandleEdit()
     {
-        Model.Id = Id;
-        taskEdited = Model;
+        try
+        {
+            Model.Id = Id;
+            taskEdited = Model;
 
-        var url = "https://localhost:7103/task/edit";
+            var url = "https://localhost:7103/task/edit";
 
-        var response = await Http.PostAsJsonAsync(url, taskEdited);
+            var response = await Http.PostAsJsonAsync(url, taskEdited);
 
-        var result = await response.Content.ReadFromJsonAsync<Response>();
+            var result = await response.Content.ReadFromJsonAsync<Response>();
+            if (result == null)
+            {
+                responseMessage = "Erro ao ler os dados JSON";
+                return new Response("Erro ao ler os dados do JSON", 400);
+            }
+            responseMessage = result.Message;
 
-        responseMessage = result.Message;
+            return result;
+        }
+        catch (Exception e)
+        {
+            responseMessage = $"Erro ao acessar - {e.Message}";
+            return new Response($"Erro ao acessar - {e.Message}", 400);
+        }
 
-        return result;
+
     }
 }

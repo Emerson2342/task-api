@@ -11,19 +11,19 @@ namespace TaskList.Components.Domain.Main.Entities
         [JsonPropertyName("name")]
         public string Name { get; set; } = string.Empty;
         [JsonPropertyName("email")]
-        public Email Email { get; set; }
+        public Email Email { get; set; } = new(string.Empty);
         [JsonPropertyName("password")]
-        public Password Password { get; set; }
+        public Password Password { get; set; } = new(string.Empty);
         [JsonPropertyName("token")]
-        public string Token { get; set; }
+        public string Token { get; set; } = string.Empty;
         [JsonPropertyName("verificationCode")]
-        public string VerificationCode { get; set; }
+        public string VerificationCode { get; set; } = string.Empty;
         [JsonPropertyName("isEmailConfirmed")]
         public bool IsEmailConfirmed { get; set; } = false;
 
 
         public IList<TaskEntity> Tasks { get; set; } = new List<TaskEntity>();
-        protected User() { }
+        public User() { }
 
         public User(string name, Email email, Password password)
         {

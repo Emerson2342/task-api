@@ -14,58 +14,68 @@
 @inject HttpClient Http
 @inject Authenticationservice Authenticationservice
 
-    <h3>Lista de Tarefas</h3>
-    <table class="table">
-        <thead>
+<h3 style="width:100%;text-align:center;font-weight:900;font-size:30px">Lista de Tarefas</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <td>Nome</td>
+            <td>Descrição</td>
+            <td>Início</td>
+            <td>Término</td>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var task in _tasks)
+        {
+
             <tr>
-                <td>Ord</td>
-                <td>Nome</td>
-                <td>Descrição</td>
-                <td>Início</td>
-                <td>Término</td>
+                <td>@task.Title</td>
+                <td>@task.Description</td>
+                <td>@task.StartTime.ToShortDateString()</td>
+                <td>@task.Deadline.ToShortDateString()</td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Third group">
+                        <a class="btn btn-primary" href="/task-list/edit/@task.Id">Editar</a>
+                        <a class="btn btn-danger" href="/task-list/delete/@task.Id">Apagar</a>
+                    </div>
+                </td>
             </tr>
-        </thead>
-        <tbody>
+        }
 
-            @foreach (var task in _tasks)
-            {
-
-                <tr>
-                    <td>@count++</td>
-                    <td>@task.Title</td>
-                    <td>@task.Description</td>
-                    <td>@task.StartTime.ToShortDateString()</td>
-                    <td>@task.Deadline.ToShortDateString()</td>
-                    <td>
-                        <div class="btn-group" role="group" aria-label="Third group">
-                            <a class="btn btn-primary" href="/task-list/edit/@task.Id">Editar</a>
-                            <a class="btn btn-danger" href="/task-list/delete/@task.Id">Apagar</a>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <a href="create-task" class="btn btn-primary"><i class="oi oi-plus"></i> Adicionar Tarefa </a>
-    <NavLink href="/home" @onclick="LogOut" class="btn btn-warning">Sair</NavLink>
+    </tbody>
+</table>
+@if (_tasks.Count == 0)
+{
+    <p style="width:100%;text-align:center; font-size:50px">Lista vazia</p>
+}
+<div style="margin-left:25%; position:fixed; bottom: 0;flex-direction:row; width: 50%;align-content:center; justify-content:space-between;padding-bottom: 1%; display:flex">
+    <div style="width:33%">
+        <a style="width:100%" href="create-task" class="btn btn-success">Adicionar Tarefa </a>
+    </div>
+    <div style="width:33%">
+        <a style="width:100%" href="/change-password" class="btn btn-primary">Alterar Senha</a>
+    </div>
+    <div style="width:33%">
+        <a style="width:100%" href="/home" @onclick="LogOut" class="btn btn-warning">Sair</a>
+    </div>
+</div>
 
 
-    @if (!string.IsNullOrEmpty(responseMessage))
-    {
-        <div class="alert alert-info mt-3">
-            @responseMessage
-        </div>
+@if (!string.IsNullOrEmpty(responseMessage))
+{
+    <div class="alert alert-info mt-3">
+        @responseMessage
+    </div>
 }
 
 @code {
-    int count = 1;
     List<TaskEntity> _tasks = new();
 
     string responseMessage = string.Empty;
     string token = string.Empty;
     string userId = string.Empty;
-    bool isTokenReady = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -75,19 +85,24 @@
             userId = await Authenticationservice.GetUserIdAsync();
             if (string.IsNullOrWhiteSpace(token))
                 NavManager.NavigateTo("/authorize");
-            await OnInitializedAsync();
+            await InitializedAsync();
         }
     }
 
-    private async Task OnInitializedAsync()
+    private async Task InitializedAsync()
     {
-       
+
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         var response = await Http.GetAsync($"https://localhost:7103/task/list/{userId}");
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<Response>();
+            if (result == null)
+            {
+                responseMessage = "Erro ao ler dados do JSON";
+                return;
+            }
             _tasks = result.TasksList;
             responseMessage = result.Message;
         }
