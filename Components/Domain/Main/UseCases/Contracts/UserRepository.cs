@@ -17,24 +17,24 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
             return await _context.Users.AnyAsync(x=>x.Email.Address == email);
         }
 
-        public async Task<User> GetUserByEmailAsync(string email)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(user => user.Email.Address == email)?? new ();
+            return await _context.Users.FirstOrDefaultAsync(user => user.Email.Address == email);
         }
 
-        public async Task<User> GetUserByIdAsync(string id)
+        public async Task<User?> GetUserByIdAsync(string id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id) ?? new();
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == id);
         }
 
-        public async Task<User> GetUserByTokenFromRouteAsync(string token)
+        public async Task<User?> GetUserByTokenFromRouteAsync(string token)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Token == token) ?? new();
+            return await _context.Users.FirstOrDefaultAsync(x => x.Token == token);
         }
 
-        public async Task<User> GetUserByTokenAsync(string token)
+        public async Task<User?> GetUserByTokenAsync(string token)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == token) ?? new();
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id.ToString() == token);
         }
 
         public async Task SaveChangesAsync()

@@ -37,28 +37,28 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
 
         public async Task<Response> EditTask(RequestTask taskToEdit)
         {
-            var exists = await _repository.AnyTaskByIdAsync(taskToEdit.Id);
-
-            if (!exists) return new Response($"Tarefa para editar não encontrada! Id: {taskToEdit.Id}", 400);
-
             var originalTask = await _repository.GetTaskById(taskToEdit.Id);
+
+            if (originalTask == null)
+            {
+                return new Response($"Tarefa para editar não encontrada! Id: {taskToEdit.Id}", 400);
+            }
 
             var taskEdited = TaskEntity.Edit(originalTask, taskToEdit);
 
-            if(taskEdited.TaskEntity == null)
+            if (taskEdited.TaskEntity == null)
                 return taskEdited.Response;
 
 
             await _repository.UpdateAsync(taskEdited.TaskEntity);
-            
+
             return new Response($"Tarefa editada com sucesso! {taskEdited.TaskEntity.Title}", 201);
         }
         public async Task<Response> DeleteTask(Guid id)
         {
-            var exists = await _repository.AnyTaskByIdAsync(id);
-            if (!exists) return new Response($"Tarefa não encontrada! Id: {id}", 400);
-
             var task = await _repository.GetTaskById(id);
+            if (task == null)
+                return new Response($"Tarefa não encontrada! Id: {id}", 400);
 
             await _repository.DeleteTaskAsync(task);
 
@@ -83,11 +83,13 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             try
             {
                 var task = await _repository.GetTaskById(id);
+                if (task == null)
+                    return new Response($"Tarefa não encontrada! Id: {id}", 404);
                 return new Response("Tarefa encontrada!", task);
             }
-            catch
+            catch (Exception ex)
             {
-                return new Response("Erro ao buscar tarefa!", 500);
+                return new Response($"Erro ao buscar a tarefa: {ex.Message}", 500);
             }
 
         }

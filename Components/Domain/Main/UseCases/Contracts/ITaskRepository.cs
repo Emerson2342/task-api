@@ -6,8 +6,8 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
     {
         Task<bool> AnyTaskByTitleAsync(string title);
         Task<bool> AnyTaskByIdAsync(Guid id);
-        Task<TaskEntity> GetTaskById(Guid id);
-        Task<TaskEntity> GetTaskByTitle(string title);
+        Task<TaskEntity?> GetTaskById(Guid id);
+        Task<TaskEntity?> GetTaskByTitle(string title);
         Task SaveAsync(TaskEntity task);
         Task UpdateAsync(TaskEntity task);
         Task DeleteTaskAsync(TaskEntity task);

@@ -13,7 +13,7 @@ namespace TaskList.Components.Domain.Main.Entities
         public Guid UserId { get; set; }
 
         [JsonPropertyName("user")]
-        public User User { get; set; } = new();
+        public User User { get; set; }
 
         [JsonPropertyName("title")]
         public string Title { get; set; } =string.Empty;
@@ -29,7 +29,7 @@ namespace TaskList.Components.Domain.Main.Entities
 
         [JsonConstructor]
         protected TaskEntity() { }
-
+      
         private TaskEntity(Guid userId, string title, string description, DateOnly startTime, DateOnly deadline)
         {
             UserId = userId;

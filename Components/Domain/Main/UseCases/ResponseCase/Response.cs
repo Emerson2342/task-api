@@ -1,6 +1,8 @@
 ﻿
 using System.Text.Json.Serialization;
 using TaskList.Components.Domain.Main.Entities;
+using TaskList.Components.Pages.UserPages;
+using static TaskList.Components.Domain.Main.Entities.TaskEntity;
 
 namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
 {
@@ -11,7 +13,7 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
         public UserResponse User { get; set; } = new UserResponse();
 
         [JsonPropertyName("taskList")]
-        public TaskEntity TaskList { get; set; } = new();
+        public TaskEntity TaskList { get; set; }
 
         [JsonPropertyName("tasksList")]
         public List<TaskEntity> TasksList { get; set; } = [];

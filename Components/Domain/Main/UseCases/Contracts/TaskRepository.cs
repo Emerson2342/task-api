@@ -23,14 +23,14 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
             return await _context.Tasks.AnyAsync(task => task.Id == id);
         }
 
-        public async Task<TaskEntity> GetTaskById(Guid id)
+        public async Task<TaskEntity?> GetTaskById(Guid id)
         {
-            return await _context.Tasks.FirstOrDefaultAsync(task => task.Id == id) ?? new TaskEntity();
+            return await _context.Tasks.FirstOrDefaultAsync(task => task.Id == id);
         }
 
-        public async Task<TaskEntity> GetTaskByTitle(string title)
+        public async Task<TaskEntity?> GetTaskByTitle(string title)
         {
-            return await _context.Tasks.FirstOrDefaultAsync(task => task.Title == title) ?? new TaskEntity();
+            return await _context.Tasks.FirstOrDefaultAsync(task => task.Title == title);
         }
 
         public async Task SaveAsync(TaskEntity task)

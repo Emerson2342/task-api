@@ -22,8 +22,8 @@ namespace TaskList.Components.Domain.Main.Entities
         public bool IsEmailConfirmed { get; set; } = false;
 
 
-        public IList<TaskEntity> Tasks { get; set; } = new List<TaskEntity>();
-        public User() { }
+        public IList<TaskEntity> Tasks { get; set; } 
+        protected User() { }
 
         public User(string name, Email email, Password password)
         {
