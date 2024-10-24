@@ -21,6 +21,18 @@ namespace TaskList.Components.Domain.Extensions
                 builder.Configuration.GetSection("Secrets").GetValue<string>("JwtPrivateKey") ?? string.Empty;
             Configuration.Secrets.PasswordSaltKey =
                 builder.Configuration.GetSection("Secrets").GetValue<string>("PasswordSaltKey") ?? string.Empty;
+
+            Configuration.Email.UserName =
+           builder.Configuration.GetSection("SmtpSettings").GetValue<string>("Username") ?? string.Empty;
+            Configuration.Email.Password =
+                builder.Configuration.GetSection("SmtpSettings").GetValue<string>("Password") ?? string.Empty;
+            Configuration.Email.SmtpServer =
+                builder.Configuration.GetSection("SmtpSettings").GetValue<string>("SmtpServer") ?? string.Empty;
+            Configuration.Email.Port =
+                builder.Configuration.GetSection("SmtpSettings").GetValue<int>("Port");
+
+            Configuration.Ip.IpAddress = builder.Configuration.GetSection("IpConfig").GetValue<string>("IpAddress") ?? string.Empty;
+            Configuration.Ip.IpAddress = builder.Configuration.GetSection("IpConfig").GetValue<string>("LocalHost") ?? string.Empty;
         }
         public static void AddDataBase(this WebApplicationBuilder builder)
         {

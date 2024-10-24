@@ -29,7 +29,6 @@
 
         @foreach (var task in _tasks)
         {
-
             <tr>
                 <td>@task.Title</td>
                 <td>@task.Description</td>
@@ -73,6 +72,8 @@
 @code {
     List<TaskEntity> _tasks = new();
 
+    private string LocalHost = Configuration.Ip.IpAddress;
+
     string responseMessage = string.Empty;
     string token = string.Empty;
     string userId = string.Empty;
@@ -91,10 +92,12 @@
 
     private async Task InitializedAsync()
     {
-
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+
+        //var response = await Http.GetAsync($"https://{LocalHost}/task/list/{userId}");
         var response = await Http.GetAsync($"https://localhost:7103/task/list/{userId}");
+
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<Response>();

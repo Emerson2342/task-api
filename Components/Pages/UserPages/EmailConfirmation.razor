@@ -25,6 +25,7 @@
 
     [Parameter]
     public string Token { get; set; } = string.Empty;
+    private string LocalHost = Configuration.Ip.LocalHost;
 
     private string tokenUser = string.Empty;
 
@@ -36,6 +37,7 @@
     {
         if (firstRender)
         {
+            //var url = $"https://{LocalHost}/user/confirmation/{Token}";
             var url = $"https://localhost:7103/user/confirmation/{Token}";
 
             var response = await Http.GetAsync(url);

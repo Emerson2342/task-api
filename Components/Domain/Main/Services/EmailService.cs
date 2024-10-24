@@ -5,6 +5,10 @@ namespace TaskList.Components.Domain.Main.Services
 {
     public class EmailService
     {
+        public EmailService()
+        {
+            
+        }
         public bool Send(
            string toName,
            string toEmail,
@@ -14,9 +18,9 @@ namespace TaskList.Components.Domain.Main.Services
            string fromEmail = "emersonr@novaweb.mobi"
            )
         {
-            SmtpClient smtpClient = new("smtp.outlook.com", 587);
+            SmtpClient smtpClient = new(Configuration.Email.SmtpServer, Configuration.Email.Port);
 
-            smtpClient.Credentials = new NetworkCredential("emersonr@novaweb.mobi", "Oceanic815plane2");
+            smtpClient.Credentials = new NetworkCredential(Configuration.Email.UserName, Configuration.Email.Password);
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
             smtpClient.EnableSsl = true;
 

@@ -22,7 +22,7 @@ namespace TaskList.Components.Domain.Main.Entities
         public bool IsEmailConfirmed { get; set; } = false;
 
 
-        public IList<TaskEntity> Tasks { get; set; } 
+        public IList<TaskEntity>? Tasks { get; set; } 
         protected User() { }
 
         public User(string name, Email email, Password password)

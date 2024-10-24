@@ -52,6 +52,8 @@
 
     [SupplyParameterFromForm]
     private RequestTask model { get; set; } = new();
+    private string LocalHost = Configuration.Ip.LocalHost;
+
 
     private string token = string.Empty;
     private string userId = string.Empty;
@@ -72,20 +74,30 @@
 
     private async Task<Response> HandleSubmit()
     {
+        try
+        {
+            model.UserId = Guid.Parse(userId);
+           // var url = $"https://{LocalHost}/task/create";
+            var url = $"https://localhost:7103/task/create";
 
-        model.UserId = Guid.Parse(userId);
-        var url = "https://localhost:7103/task/create";
+              Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+              var response = await Http.PostAsJsonAsync(url, model);
 
-        var response = await Http.PostAsJsonAsync(url, model);
+              var result = await response.Content.ReadFromJsonAsync<Response>();
 
-        var result = await response.Content.ReadFromJsonAsync<Response>();
-        if (result == null) return new Response("", StatusCodes.Status400BadRequest);
-        if (result.IsSuccess)
-            NavManager.NavigateTo("/task-list");
-        else
-            responseMessage = result.Message;
-        return result;
+              if (result == null) return new Response("", StatusCodes.Status400BadRequest);
+              if (result.IsSuccess)
+                  NavManager.NavigateTo("/task-list");
+              else
+                  responseMessage = result.Message;
+
+              return result;
+        }catch (Exception e)
+        {
+            responseMessage = $"Erro ao criar tarefa - {e.Message}";
+            return new Response("Erro ao criar tarefa - " + e.Message, StatusCodes.Status500InternalServerError);
+        }
+       
     }
 }

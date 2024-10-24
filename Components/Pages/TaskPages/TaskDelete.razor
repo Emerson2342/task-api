@@ -14,12 +14,7 @@
 @inject Authenticationservice Authenticationservice
 @rendermode InteractiveServer
 
-@if (string.IsNullOrEmpty(token))
-{
-    <Authorize />
-}
-else
-{
+
     <h3>Deseja apagar a tarefa "@model.Title"?</h3>
 
     <EditForm Model="model" OnSubmit="HandleDelete" FormName="taskEditForm">
@@ -42,11 +37,13 @@ else
             @responseMessage
         </div>
     }
-}
+
 
 @code {
     [Parameter]
     public Guid Id { get; set; }
+
+    private string LocalHost = Configuration.Ip.LocalHost;
 
     private RequestTask model = new();
     private string? responseMessage;
@@ -57,6 +54,8 @@ else
         if (firstRender)
         {
             token = await Authenticationservice.GetTokenAsync();
+            if (string.IsNullOrWhiteSpace(token))
+                NavManager.NavigateTo("/authorize");
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await OnInitializedAsync();
         }
@@ -66,11 +65,17 @@ else
     {
         try
         {
+            //var url = $"https://{LocalHost}/task/task/{Id}";
             var url = $"https://localhost:7103/task/task/{Id}";
 
             var response = await Http.GetAsync(url);
             var result = await response.Content.ReadFromJsonAsync<Response>();
             if (result == null)
+            {
+                responseMessage = "Erro ao ler os dados JSON";
+                return;
+            }
+            if (result.TaskList == null)
             {
                 responseMessage = "Erro ao ler os dados JSON";
                 return;
@@ -88,15 +93,10 @@ else
             responseMessage = $"Erro ao acessar - {e.Message}";
             return;
         }
-
-
-
     }
-
 
     private async Task<Response> HandleDelete()
     {
-
         try
         {
             model.Id = Id;

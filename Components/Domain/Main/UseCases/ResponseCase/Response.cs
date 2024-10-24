@@ -13,7 +13,7 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
         public UserResponse User { get; set; } = new UserResponse();
 
         [JsonPropertyName("taskList")]
-        public TaskEntity TaskList { get; set; }
+        public TaskEntity? TaskList { get; set; }
 
         [JsonPropertyName("tasksList")]
         public List<TaskEntity> TasksList { get; set; } = [];

@@ -12,14 +12,12 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
     {
         private readonly IUserRepository _repository;
         private readonly TokenService _tokenService;
-        private readonly IConfiguration _configuration;
+        private readonly string Ip = Configuration.Ip.IpAddress;
       
-        public UserHandler(IConfiguration configuration
-, IUserRepository repository, TokenService tokenService)
+        public UserHandler(IUserRepository repository, TokenService tokenService)
         {
             _repository = repository;
             _tokenService = tokenService;
-            _configuration = configuration;
         }
 
         public async Task<Response> CreateUser(RequestCreateUser newUser)
@@ -38,9 +36,9 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 userPassword = new Password(newUser.Password);
 
                 User user = new(newUser.Name, userEmail, userPassword);
-                string link = $"<a href='https://{_configuration["IpConfig:IpAddress"]}/confirmation/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
+                string link = $"<a href='https://{Ip}/confirmation/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
                     $"<br>Se preferir, cole isso no seu navegador <br> " +
-                    $"https://{_configuration["IpConfig:IpAddress"]}/confirmation/{user.Token}";
+                    $"https://{Ip}/confirmation/{user.Token}";
 
                 var email = new EmailService();
 
@@ -139,9 +137,9 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             _repository.UpdateUser(user);
             await _repository.SaveChangesAsync();
 
-            string link = $"<a href='https://{_configuration["IpConfig:IpAddress"]}/reset-password/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
+            string link = $"<a href='https://{Ip}/reset-password/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
                     $"<br>Se preferir, cole isso no seu navegador <br> " +
-                    $"https://{_configuration["IpConfig:IpAddress"]}/reset-password/{user.Token}";
+                    $"https://{Ip}/reset-password/{user.Token}";
 
             EmailService email = new();
 

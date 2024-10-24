@@ -43,7 +43,6 @@
         </EditForm>
     </div>
 
-
 </div>
 
 @if (!string.IsNullOrEmpty(responseMessage))
@@ -78,13 +77,12 @@
             var id = await Authenticationservice.GetUserIdAsync();
 
             if (res)
-            { NavManager.NavigateTo("/task-list");}
-            else
-            {
-                NavManager.NavigateTo("/authorize");
-            }
+              { NavManager.NavigateTo("/task-list");}
+              else
+              {
+                  NavManager.NavigateTo("/authorize");
+              }
         }
-
         return result;
     }
 

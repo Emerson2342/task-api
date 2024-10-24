@@ -17,7 +17,6 @@
 }
 else
 {
-
     <h3>Editar Tarefa</h3>
 
     <EditForm Model="@Model" OnValidSubmit="HandleEdit" FormName="taskEditForm">
@@ -67,6 +66,8 @@ else
     private RequestTask Model { get; set; } = new();
     private RequestTask ModelIn { get; set; } = new();
 
+    private string LocalHost = Configuration.Ip.LocalHost;
+
     private RequestTask taskEdited = new();
     private string token = string.Empty;
     private string? responseMessage;
@@ -82,6 +83,7 @@ else
     new private async Task OnInitializedAsync()
     {
 
+       // var url = $"https://{LocalHost}/task/task/{Id}";
         var url = $"https://localhost:7103/task/task/{Id}";
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await Http.GetAsync(url);
@@ -93,7 +95,7 @@ else
             return;
         }
 
-        if (result.IsSuccess)
+        if (result.TaskList != null)
         {
             Model.Title = result.TaskList.Title;
             Model.Description = result.TaskList.Description;
@@ -110,7 +112,7 @@ else
             Model.Id = Id;
             taskEdited = Model;
 
-            var url = "https://localhost:7103/task/edit";
+            var url = $"https://{LocalHost}/task/edit";
 
             var response = await Http.PostAsJsonAsync(url, taskEdited);
 
