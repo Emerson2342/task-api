@@ -54,8 +54,8 @@
         if (firstRender)
         {
             token = await Authenticationservice.GetTokenAsync();
-            if (string.IsNullOrWhiteSpace(token))
-                NavManager.NavigateTo("/authorize");
+             if (string.IsNullOrWhiteSpace(token))
+                 NavManager.NavigateTo("/authorize");
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await OnInitializedAsync();
         }

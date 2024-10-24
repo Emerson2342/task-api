@@ -7,16 +7,12 @@
 @using global::TaskList.Components.Domain.Main.Entities
 @using global::TaskList.Components.Domain.Main.UseCases.ResponseCase
 
+@inject NavigationManager NavManager
 @rendermode InteractiveServer
 @inject HttpClient Http;
 @inject Authenticationservice Authenticationservice
 
-@if (string.IsNullOrEmpty(token))
-{
-    <Authorize />
-}
-else
-{
+
     <h3>Editar Tarefa</h3>
 
     <EditForm Model="@Model" OnValidSubmit="HandleEdit" FormName="taskEditForm">
@@ -47,16 +43,12 @@ else
         <a class="btn btn-primary" href="/task-list">Voltar</a>
     </EditForm>
 
-
-}
 @if (!string.IsNullOrEmpty(responseMessage))
 {
     <div class="alert alert-info mt-3">
         @responseMessage
     </div>
 }
-
-
 
 @code {
     [Parameter]
@@ -77,6 +69,8 @@ else
         if (firstRender)
         {
             token = await Authenticationservice.GetTokenAsync();
+             if (string.IsNullOrWhiteSpace(token))
+                 NavManager.NavigateTo("/authorize");
             await OnInitializedAsync();
         }
     }

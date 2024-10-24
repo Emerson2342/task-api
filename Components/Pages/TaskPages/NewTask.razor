@@ -66,8 +66,8 @@
         {
             userId = await Authenticationservice.GetUserIdAsync();
             token = await Authenticationservice.GetTokenAsync();
-            if (string.IsNullOrWhiteSpace(token))
-                NavManager.NavigateTo("/authorize");
+             if (string.IsNullOrWhiteSpace(token))
+                 NavManager.NavigateTo("/authorize");
             StateHasChanged();
         }
     }

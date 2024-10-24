@@ -14,7 +14,6 @@ using TaskList.Components.Domain.Main.UseCases.Create;
 var builder = WebApplication.CreateBuilder(args);
 builder.AddConfiguration();
 builder.AddDataBase();
-//builder.AddSmtp();
 builder.AddJwtAuthentication();
 builder.AddSwaggerDocumentation();
 builder.Services.AddRazorPages();
@@ -26,7 +25,6 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<Authenticationservice>();
 builder.Services.AddTransient<EmailService>();
-//builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredSessionStorage();
 
 
