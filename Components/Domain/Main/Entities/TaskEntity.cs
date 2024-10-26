@@ -57,12 +57,13 @@ namespace TaskList.Components.Domain.Main.Entities
 
         public static TaskResult Edit(TaskEntity originalTask, RequestTask editTask)
         {
-            DateOnly defaultDate = new (1, 1, 1);
+            DateOnly defaultStartTime = DateOnly.FromDateTime(DateTime.Now);
+            DateOnly defaultDeadline = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
 
             originalTask.Title = string.IsNullOrEmpty(editTask.Title) ? originalTask.Title : editTask.Title;
             originalTask.Description = string.IsNullOrEmpty(editTask.Description) ? originalTask.Description : editTask.Description;
-            originalTask.StartTime = editTask.StartTime == defaultDate ? originalTask.StartTime : editTask.StartTime;
-            originalTask.Deadline = editTask.Deadline == defaultDate ? originalTask.Deadline : editTask.Deadline;
+            originalTask.StartTime = editTask.StartTime == defaultStartTime ? originalTask.StartTime : editTask.StartTime;
+            originalTask.Deadline = editTask.Deadline == defaultDeadline ? originalTask.Deadline : editTask.Deadline;
 
             if (originalTask.StartTime < DateOnly.FromDateTime(DateTime.UtcNow))
                 return new TaskResult(new Response("Data inicial inválida", 400));

@@ -35,21 +35,25 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 userEmail = new Email(newUser.Email);
                 userPassword = new Password(newUser.Password);
 
-                User user = new(newUser.Name, userEmail, userPassword);
-                string link = $"<a href='https://{Ip}/confirmation/{user.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
+                var userResult = User.New(newUser.Name, userEmail, userPassword);
+
+                if (userResult.User == null)
+                    return userResult.Response;
+               
+                string link = $"<a href='https://{Ip}/confirmation/{userResult.User.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
                     $"<br>Se preferir, cole isso no seu navegador <br> " +
-                    $"https://{Ip}/confirmation/{user.Token}";
+                    $"https://{Ip}/confirmation/{userResult.User.Token}";
 
                 var email = new EmailService();
 
                 email.Send(
-                    user.Name,
-                    user.Email.Address,
+                    userResult.User.Name,
+                    userResult.User.Email.Address,
                     "Link de verificação",
                     $"Clique no link para confirmar o email\n{link}"
                     );
 
-                await _repository.SaveAsync(user);
+                await _repository.SaveAsync(userResult.User);
 
                 return new Response("Usuário criado com sucesso!" +
                     " Favor verificar seu email para confirmaçao de conta!", 201);

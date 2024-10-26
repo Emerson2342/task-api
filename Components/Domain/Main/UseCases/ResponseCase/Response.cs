@@ -9,8 +9,8 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
     public class Response : Shared.UseCases.Response
     {
 
-        [JsonPropertyName("userInfo")]
-        public UserResponse User { get; set; } = new UserResponse();
+        [JsonPropertyName("user")]
+        public User User { get; set; } = null!;
 
         [JsonPropertyName("taskList")]
         public TaskEntity? TaskList { get; set; }
@@ -30,7 +30,7 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
             Message = message;
             Status = 201;
             User.Name = user.Name;
-            User.UserId = user.Id;
+            User.Id = user.Id;
             User.Token = token;
             User.IsEmailConfirmed = user.IsEmailConfirmed;
             User.Email = user.Email;
@@ -40,7 +40,7 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
             Message = message;
             Status = 201;
             User.Name = user.Name;
-            User.UserId = user.Id;
+            User.Id = user.Id;
             User.IsEmailConfirmed = user.IsEmailConfirmed;
             User.Email = user.Email;
         }

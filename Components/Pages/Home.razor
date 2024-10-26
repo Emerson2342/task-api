@@ -67,7 +67,7 @@
     {
         var result = await Authenticationservice.Login(model);
         token = result.User.Token;
-        userId = result.User.UserId;
+        userId = result.User.Id;
 
         responseMessage = result.Message;
         if (result.IsSuccess)
