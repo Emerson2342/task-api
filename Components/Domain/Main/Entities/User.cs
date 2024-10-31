@@ -22,7 +22,7 @@ namespace TaskList.Components.Domain.Main.Entities
 
 
         public IList<TaskEntity>? Tasks { get; set; }
-        protected User() { }
+        public User() { }
 
         private User(string name, Email email, Password password)
         {

@@ -10,7 +10,7 @@ namespace TaskList.Components.Domain.Main.UseCases.ResponseCase
     {
 
         [JsonPropertyName("user")]
-        public User User { get; set; } = null!;
+        public User User { get; set; } = new User();
 
         [JsonPropertyName("taskList")]
         public TaskEntity? TaskList { get; set; }
