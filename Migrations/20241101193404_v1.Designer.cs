@@ -12,8 +12,8 @@ using TaskList.Components.Domain.Infra.Data;
 namespace TaskList.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241021114721_v2")]
-    partial class v2
+    [Migration("20241101193404_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,20 +70,19 @@ namespace TaskList.Migrations
 
                     b.Property<sbyte>("IsEmailConfirmed")
                         .HasColumnType("TINYINT")
-                        .HasColumnName("is_email_confirmed");
+                        .HasColumnName("is_email_confirmed")
+                        .HasAnnotation("Relational:JsonPropertyName", "isEmailConfirmed");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("VARCHAR(100)")
-                        .HasColumnName("name");
+                        .HasColumnName("name")
+                        .HasAnnotation("Relational:JsonPropertyName", "name");
 
                     b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("VerificationCode")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("longtext")
+                        .HasAnnotation("Relational:JsonPropertyName", "token");
 
                     b.HasKey("Id");
 
@@ -119,6 +118,8 @@ namespace TaskList.Migrations
 
                             b1.ToTable("users");
 
+                            b1.HasAnnotation("Relational:JsonPropertyName", "email");
+
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
                         });
@@ -136,6 +137,8 @@ namespace TaskList.Migrations
                             b1.HasKey("UserId");
 
                             b1.ToTable("users");
+
+                            b1.HasAnnotation("Relational:JsonPropertyName", "password");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");

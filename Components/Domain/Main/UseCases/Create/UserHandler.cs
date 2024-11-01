@@ -25,17 +25,12 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             var exists = await _repository.AnyAsync(newUser.Email);
 
 
-
             if (exists)
                 return new Response("Já existe uma conta com esse email", 401);
-            Email userEmail;
-            Password userPassword;
+            
             try
             {
-                userEmail = new Email(newUser.Email);
-                userPassword = new Password(newUser.Password);
-
-                var userResult = User.New(newUser.Name, userEmail, userPassword);
+                var userResult = User.CreateUser(newUser.Name, newUser.Email, newUser.Password);
 
                 if (userResult.User == null)
                     return userResult.Response;
@@ -44,14 +39,14 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                     $"<br>Se preferir, cole isso no seu navegador <br> " +
                     $"https://{Ip}/confirmation/{userResult.User.Token}";
 
-                var email = new EmailService();
+                //var email = new EmailService();
 
-                email.Send(
-                    userResult.User.Name,
-                    userResult.User.Email.Address,
-                    "Link de verificação",
-                    $"Clique no link para confirmar o email\n{link}"
-                    );
+                //email.Send(
+                //    userResult.User.Name,
+                //    userResult.User.Email.Address,
+                //    "Link de verificação",
+                //    $"Clique no link para confirmar o email\n{link}"
+                //    );
 
                 await _repository.SaveAsync(userResult.User);
 
@@ -94,17 +89,24 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
         }
         public async Task<Response> Login(RequestLogin login)
         {
-            var user = await _repository.GetUserByEmailAsync(login.Email);
+            try
+            {
+                var user = await _repository.GetUserByEmailAsync(login.Email);
 
-            if (user == null || !Password.Verify(user.Password.PassWord, login.Password))
-                return new Response($"Usuário e/ou senha estão incorretos", 400);
+                if (user == null || !Password.Verify(user.Password.PassWord, login.Password))
+                    return new Response($"Usuário e/ou senha estão incorretos", 400);
 
-            if (!user.IsEmailConfirmed)
-                return new Response($"Email não confirmado, favor confirmar o email!", 400);
+                if (!user.IsEmailConfirmed)
+                    return new Response($"Email não confirmado, favor confirmar o email!", 400);
 
-            var token = _tokenService.CreateToken(user);
+                var token = _tokenService.CreateToken(user);
 
-            return new Response("Login efetuado com sucesso!", user, token);
+                return new Response("Login efetuado com sucesso!", user, token);
+            }catch (Exception ex)
+            {
+                return new Response($"Erro ao fazer o login. {ex.Message}!");
+            }
+            
         }
         public async Task<Response> ChangePasswordLogged(string userToken, RequestPassword newPassword)
         {

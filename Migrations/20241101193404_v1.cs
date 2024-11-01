@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskList.Migrations
 {
     /// <inheritdoc />
-    public partial class addDateOnly : Migration
+    public partial class v1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,8 +26,6 @@ namespace TaskList.Migrations
                     password = table.Column<string>(type: "VARCHAR(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Token = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    VerificationCode = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     is_email_confirmed = table.Column<sbyte>(type: "TINYINT", nullable: false)
                 },

@@ -1,25 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using TaskList.Components.Domain.Main.UseCases.ResponseCase;
 
 namespace TaskList.Components.Domain.Main.ValueObjects
 {
-    public partial class Email
-    {
-        private const string Pattern = @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
-
-        [Required(ErrorMessage = "Favor, preencher o campo EMAIL")]
+    public class Email
+    {      
         public string Address { get; private set; } = string.Empty;
 
         protected Email() { }
         public Email(string address)
         {
             Address = address.Trim().ToLower();
-
-            //if (!EmailRegex().IsMatch(Address))
-            //  throw new Exception(address);
         }
-
-        [GeneratedRegex(Pattern)]
-        private static partial Regex EmailRegex();
     }
 }
