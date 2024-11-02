@@ -39,14 +39,14 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                     $"<br>Se preferir, cole isso no seu navegador <br> " +
                     $"https://{Ip}/confirmation/{userResult.User.Token}";
 
-                //var email = new EmailService();
+                var email = new EmailService();
 
-                //email.Send(
-                //    userResult.User.Name,
-                //    userResult.User.Email.Address,
-                //    "Link de verificação",
-                //    $"Clique no link para confirmar o email\n{link}"
-                //    );
+                email.Send(
+                    userResult.User.Name,
+                    userResult.User.Email.Address,
+                    "Link de verificação",
+                    $"Clique no link para confirmar o email\n{link}"
+                    );
 
                 await _repository.SaveAsync(userResult.User);
 
