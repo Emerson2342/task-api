@@ -49,7 +49,8 @@
 {
     <p style="width:100%;text-align:center; font-size:50px">Lista vazia</p>
 }
-<div style="margin-left:25%; position:fixed; bottom: 0;flex-direction:row; width: 50%;align-content:center; justify-content:space-between;padding-bottom: 1%; display:flex">
+<div
+    style="margin-left:25%; position:fixed; bottom: 0;flex-direction:row; width: 50%;align-content:center; justify-content:space-between;padding-bottom: 1%; display:flex">
     <div style="width:33%">
         <a style="width:100%" href="create-task" class="btn btn-success">Adicionar Tarefa </a>
     </div>
@@ -84,8 +85,8 @@
         {
             token = await Authenticationservice.GetTokenAsync();
             userId = await Authenticationservice.GetUserIdAsync();
-             if (string.IsNullOrWhiteSpace(token))
-                 NavManager.NavigateTo("/authorize");
+            if (string.IsNullOrWhiteSpace(token))
+                NavManager.NavigateTo("/authorize");
             await InitializedAsync();
         }
     }
@@ -106,6 +107,8 @@
                 responseMessage = "Erro ao ler dados do JSON";
                 return;
             }
+            if (result.TasksList == null)
+                return;
             _tasks = result.TasksList;
             responseMessage = result.Message;
         }

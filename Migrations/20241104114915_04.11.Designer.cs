@@ -12,8 +12,8 @@ using TaskList.Components.Domain.Infra.Data;
 namespace TaskList.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241101193404_v1")]
-    partial class v1
+    [Migration("20241104114915_04.11")]
+    partial class _0411
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
