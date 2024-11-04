@@ -59,6 +59,45 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             }
         }
 
+        public async Task<Response> CreateUserFromMaui(RequestCreateUser newUser)
+        {
+            var exists = await _repository.AnyAsync(newUser.Email);
+
+
+            if (exists)
+                return new Response("Já existe uma conta com esse email", 401);
+
+            try
+            {
+                var userResult = User.CreateUser(newUser.Name, newUser.Email, newUser.Password);
+
+                if (userResult.User == null)
+                    return userResult.Response;
+
+                string link = $"<a href='https://{Ip}/user/confirmation-maui/{userResult.User.Token}' target='_blank'>Clique aqui para confirmar seu e-mail</a>" +
+                    $"<br>Se preferir, cole isso no seu navegador <br> " +
+                    $"https://{Ip}/user/confirmation-maui/{userResult.User.Token}";
+
+                var email = new EmailService();
+
+                email.Send(
+                    userResult.User.Name,
+                    userResult.User.Email.Address,
+                    "Link de verificação",
+                    $"Clique no link para confirmar o email\n{link}"
+                    );
+
+                await _repository.SaveAsync(userResult.User);
+
+                return new Response("Usuário criado com sucesso!" +
+                    " Favor verificar seu email para confirmaçao de conta!", 201);
+            }
+            catch (Exception ex)
+            {
+                return new Response($"Erro ao criar usuário. {ex.Message}", 500);
+            }
+        }
+
         public async Task<Response> GetUser(string userId)
         {
             var user = await _repository.GetUserByTokenAsync(userId);

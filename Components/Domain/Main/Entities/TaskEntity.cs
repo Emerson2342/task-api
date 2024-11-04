@@ -13,7 +13,7 @@ namespace TaskList.Components.Domain.Main.Entities
         public Guid UserId { get; set; }
 
         [JsonPropertyName("user")]
-        public User User { get; set; } = new User();
+        public User? User { get; set; }
 
         [JsonPropertyName("title")]
         public string Title { get; set; } =string.Empty;

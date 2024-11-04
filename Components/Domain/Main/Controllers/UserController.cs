@@ -25,6 +25,16 @@ namespace TaskList.Components.Domain.Main.Controllers
 
             return Ok(result);
         }
+
+        [SwaggerOperation(Summary = "Criar um novo usuário.", Description = "Cria um novo usuário no sistema vindo do MAUI.")]
+        [HttpPost("create-maui")]
+        public async Task<IActionResult> CreateUserFromMaui([FromBody] RequestCreateUser newUser)
+        {
+            var result = await _handler.CreateUserFromMaui (newUser);
+
+            return Ok(result);
+        }
+
         [SwaggerOperation(Summary = "Confirmar conta.", Description = "Confirma a conta de um usuário com o link enviado por email.")]
         [HttpGet("confirmation/{token}")]
         public async Task<IActionResult> Confirm([FromRoute] string token)
@@ -34,7 +44,32 @@ namespace TaskList.Components.Domain.Main.Controllers
             return Ok(result);
         }
 
-        
+        [SwaggerOperation(Summary = "Confirmar conta.", Description = "Confirma a conta de um usuário criado pelo MAUI com o link enviado por email.")]
+        [HttpGet("confirmation-maui/{token}")]
+        public async Task<IActionResult> ConfirmFromMaui([FromRoute] string token)
+        {
+            var result = await _handler.ConfirmEmail(token);
+
+            string htmlContent = $@"
+                <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset='utf-8' />
+                        <title>Confirmar Conta</title>
+                    </head>
+                    <body>
+                        <h1>Confirmar Conta</h1>
+                        <div>
+                            <p>{result.Message}</p>
+                        </div>
+                    </body>
+                    </html>";
+
+            return Content(htmlContent, "text/html");
+        }
+
+
+
         [SwaggerOperation(Summary = "Confirmar conta.", Description = "Confirma a conta de um usuário com o link enviado por email.")]
         [Authorize]
         [HttpGet("get-user")]

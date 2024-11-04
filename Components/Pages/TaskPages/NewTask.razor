@@ -52,7 +52,7 @@
 
     [SupplyParameterFromForm]
     private RequestTask model { get; set; } = new();
-    private string LocalHost = Configuration.Ip.LocalHost;
+    private string Ip = Configuration.Ip.IpAddress;
 
 
     private string token = string.Empty;
@@ -78,7 +78,7 @@
         {
             model.UserId = Guid.Parse(userId);
            // var url = $"https://{LocalHost}/task/create";
-            var url = $"https://localhost:7103/task/create";
+            var url = $"https://{Ip}/task/create";
 
               Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -95,8 +95,8 @@
               return result;
         }catch (Exception e)
         {
-            responseMessage = $"Erro ao criar tarefa - {e.Message}";
-            return new Response("Erro ao criar tarefa - " + e.Message, StatusCodes.Status500InternalServerError);
+            responseMessage = $"Erro ao criar tarefa - {e.Message} - {e.InnerException}";
+            return new Response("Erro ao criar tarefa - " + e.Message + e.InnerException, StatusCodes.Status500InternalServerError);
         }
        
     }

@@ -25,7 +25,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             if (exists)
                 return new Response("Já existe uma tarefa com esse nome", 401);
 
-            var taskResult = TaskEntity.New(newTask.UserId, newTask.Title, newTask.Description, newTask.StartTime, newTask.Deadline);
+            var taskResult = New(newTask.UserId, newTask.Title, newTask.Description, newTask.StartTime, newTask.Deadline);
 
             //in case null object from taskResult
             if (taskResult.TaskEntity == null)
