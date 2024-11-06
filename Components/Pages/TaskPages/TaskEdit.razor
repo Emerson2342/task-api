@@ -58,7 +58,7 @@
     private RequestTask Model { get; set; } = new();
     private RequestTask ModelIn { get; set; } = new();
 
-    private string LocalHost = Configuration.Ip.LocalHost;
+    private string Ip = Configuration.Ip.IpAddress;
 
     private RequestTask taskEdited = new();
     private string token = string.Empty;
@@ -78,7 +78,7 @@
     {
 
        // var url = $"https://{LocalHost}/task/task/{Id}";
-        var url = $"https://localhost:7103/task/task/{Id}";
+        var url = $"https://{Ip}/task/task/{Id}";
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await Http.GetAsync(url);
         var result = await response.Content.ReadFromJsonAsync<Response>();
@@ -106,7 +106,7 @@
             Model.Id = Id;
             taskEdited = Model;
 
-            var url = $"https://{LocalHost}/task/edit";
+            var url = $"https://{Ip}/task/edit";
 
             var response = await Http.PostAsJsonAsync(url, taskEdited);
 
@@ -122,8 +122,8 @@
         }
         catch (Exception e)
         {
-            responseMessage = $"Erro ao acessar - {e.Message}";
-            return new Response($"Erro ao acessar - {e.Message}", 400);
+            responseMessage = $"Erro ao acessar - {e.Message} - {e.InnerException}";
+            return new Response($"Erro ao acessar - {e.Message} - {e.InnerException}", 400);
         }
 
 
