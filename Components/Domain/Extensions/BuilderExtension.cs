@@ -32,7 +32,7 @@ namespace TaskList.Components.Domain.Extensions
                 builder.Configuration.GetSection("SmtpSettings").GetValue<int>("Port");
 
             Configuration.Ip.IpAddress = builder.Configuration.GetSection("IpConfig").GetValue<string>("IpAddress") ?? string.Empty;
-            Configuration.Ip.IpAddress = builder.Configuration.GetSection("IpConfig").GetValue<string>("LocalHost") ?? string.Empty;
+            Configuration.Ip.LocalHost = builder.Configuration.GetSection("IpConfig").GetValue<string>("LocalHost") ?? string.Empty;
         }
         public static void AddDataBase(this WebApplicationBuilder builder)
         {
@@ -60,9 +60,10 @@ namespace TaskList.Components.Domain.Extensions
                     {
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.Secrets.JwtPrivateKey)),
                         ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
-                });
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                    };                    
+                 });
             builder.Services.AddAuthorization();
         }
 

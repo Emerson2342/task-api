@@ -19,7 +19,7 @@ namespace TaskList.Components.Domain.Main.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 SigningCredentials = credentials,
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddMinutes(3),
                 Subject = GenerateClaims(user)
 
             };

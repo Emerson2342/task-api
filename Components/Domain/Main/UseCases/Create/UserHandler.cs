@@ -126,6 +126,26 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
 
             return new Response("Email verificado, conta liberada para o acesso!", 201);
         }
+
+        public Response VerifyToken(string token)
+        {
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+                if (jsonToken != null && jsonToken.ValidTo < DateTime.UtcNow)
+                {
+                    return new Response($"Token inválido!", 400);
+                }
+
+                return new Response($"Token válido!", 200);
+            }
+            catch (Exception ex)
+            {
+                return new Response($"Erro ao validar token! {ex.Message} - {ex.InnerException}", 500);
+            }
+        }
         public async Task<Response> Login(RequestLogin login)
         {
             try
@@ -149,25 +169,33 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
         }
         public async Task<Response> ChangePasswordLogged(string userToken, RequestPassword newPassword)
         {
-            string password = newPassword.NewPassword;
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(userToken);
+            try
+            {
+                string password = newPassword.NewPassword;
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(userToken);
 
-            string id = jwtToken.Claims.FirstOrDefault(c => c.Type == "subject")?.Value ?? string.Empty;
+                string id = jwtToken.Claims.FirstOrDefault(c => c.Type == "subject")?.Value ?? string.Empty;
 
-            var user = await _repository.GetUserByTokenAsync(id);
+                var user = await _repository.GetUserByTokenAsync(id);
 
-            if (user == null)
-                return new Response("Email não cadastrado.", 400);
+                if (user == null)
+                    return new Response("Email não cadastrado.", 400);
 
-            if (Password.Verify(user.Password.PassWord, newPassword.NewPassword))
-                return new Response("Nova senha não pode ser igual à anterior!", 400);
+                if (Password.Verify(user.Password.PassWord, newPassword.NewPassword))
+                    return new Response("Nova senha não pode ser igual à anterior!", 400);
 
-            user.Password = new Password(newPassword.NewPassword);
-            _repository.UpdateUser(user);
-            await _repository.SaveChangesAsync();
+                user.Password = new Password(newPassword.NewPassword);
+                _repository.UpdateUser(user);
+                await _repository.SaveChangesAsync();
 
-            return new Response($"Senha alterada com sucesso!", 201);
+                return new Response($"Senha alterada com sucesso!", 201);
+            }
+            catch(Exception ex)
+            {
+                return new Response($"Erro ao alterar senha! - {ex.Message}\n{ex.InnerException}", 400);
+            }
+          
         }
 
         public async Task<Response> ResetPasswordNotLogged(RequestEmail requestEmail)
@@ -192,7 +220,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 user.Name,
                 user.Email.Address,
                 "Recuperar Senha",
-                $"Clique no link para recuperar a senha\n{link}"
+                $"Clique no link para criar uma nova senha\n{link}"
                 );
             return new Response($"Email enviado com sucesso!", 201);
         }

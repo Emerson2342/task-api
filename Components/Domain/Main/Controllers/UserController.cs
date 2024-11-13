@@ -80,6 +80,17 @@ namespace TaskList.Components.Domain.Main.Controllers
             return Ok(result);
         }
 
+        [SwaggerOperation(Summary = "Validar Token.", Description = "Verifica se o Token é válido.")]
+        [Authorize]
+        [HttpGet("verify-token")]
+        public IActionResult VerifyToken([FromHeader] string token)
+        {
+           var result = _handler.VerifyToken(token);
+
+            return Ok(result);
+        }
+
+
         [SwaggerOperation(Summary = "Alterar senha.", Description = "Altera a senha do usuário autenticado.")]
         [Authorize]
         [HttpPost("change-password-in")]
