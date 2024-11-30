@@ -10,7 +10,7 @@ namespace TaskList.Components.Domain.Infra.Mappings
         {
             builder.ToTable("users");
 
-           //pk
+            //pk
             builder.HasKey(u => u.Id);
 
             builder.OwnsOne(u => u.Email, email =>
@@ -37,8 +37,7 @@ namespace TaskList.Components.Domain.Infra.Mappings
                    .HasColumnName("is_email_confirmed")
                    .HasColumnType("TINYINT")
                    .IsRequired();
-
-
+           
         }
     }
 

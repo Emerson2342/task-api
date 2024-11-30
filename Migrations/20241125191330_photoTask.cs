@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskList.Migrations
 {
     /// <inheritdoc />
-    public partial class _0411 : Migration
+    public partial class photoTask : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,7 +46,9 @@ namespace TaskList.Migrations
                     Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     StartTime = table.Column<DateOnly>(type: "date", nullable: false),
-                    Deadline = table.Column<DateOnly>(type: "date", nullable: false)
+                    Deadline = table.Column<DateOnly>(type: "date", nullable: false),
+                    PhotoTask = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {

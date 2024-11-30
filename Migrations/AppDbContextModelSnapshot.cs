@@ -38,6 +38,11 @@ namespace TaskList.Migrations
                         .HasColumnType("longtext")
                         .HasAnnotation("Relational:JsonPropertyName", "description");
 
+                    b.Property<string>("PhotoTask")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasAnnotation("Relational:JsonPropertyName", "photo_task");
+
                     b.Property<DateOnly>("StartTime")
                         .HasColumnType("date")
                         .HasAnnotation("Relational:JsonPropertyName", "startTime");

@@ -27,6 +27,9 @@ namespace TaskList.Components.Domain.Main.Entities
         [JsonPropertyName("deadLine")]
         public DateOnly Deadline { get; set; } = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
 
+        [JsonPropertyName("photo_task")]
+        public string PhotoTask { get; set; } = string.Empty;
+
         [JsonConstructor]
         protected TaskEntity() { }
       
@@ -64,6 +67,7 @@ namespace TaskList.Components.Domain.Main.Entities
             originalTask.Description = string.IsNullOrEmpty(editTask.Description) ? originalTask.Description : editTask.Description;
             originalTask.StartTime = editTask.StartTime == defaultStartTime ? originalTask.StartTime : editTask.StartTime;
             originalTask.Deadline = editTask.Deadline == defaultDeadline ? originalTask.Deadline : editTask.Deadline;
+            originalTask.PhotoTask = string.IsNullOrEmpty(editTask.PhotoTask) ? originalTask.PhotoTask : editTask.PhotoTask;
 
             if (originalTask.StartTime < DateOnly.FromDateTime(DateTime.UtcNow))
                 return new TaskResult(new Response("Data inicial inválida", 400));

@@ -28,13 +28,13 @@
             <div style="padding-bottom:5%">
                 <label for="Password" class="form-label">Login</label>
                 <InputText style="text-align:center" class="form-control" placeHolder="nome@email.com" id="email"
-                    @bind-Value="model.Email" />
+                           @bind-Value="model.Email" />
             </div>
 
             <div class="inputContent">
                 <label for="Password" class="form-label">Senha</label>
                 <InputText style="text-align:center" class="form-control" placeHolder="**********" id="Title"
-                    @bind-Value="model.Password" />
+                           @bind-Value="model.Password" />
             </div>
 
             <button class="btn btn-success" style="width:100%;margin-top:3%" type="submit">Entrar</button>
@@ -63,7 +63,7 @@
     Guid userId;
     string tokenStored = string.Empty;
     string userIdStored = string.Empty;
-    private string responseMessage = string.Empty;
+    private string? responseMessage = string.Empty;
 
     private async Task<Response> HandleSubmit()
     {
@@ -73,7 +73,11 @@
             var result = await Authenticationservice.Login(model);
 
             if (result.User == null)
+            {
+                responseMessage = result.Message;
                 return new Response($"Erro ao fazer o login. {result.Message}", 400);
+            }
+
             token = result.User.Token;
             userId = result.User.Id;
 

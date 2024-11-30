@@ -12,8 +12,8 @@ using TaskList.Components.Domain.Infra.Data;
 namespace TaskList.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241104114915_04.11")]
-    partial class _0411
+    [Migration("20241125191330_photoTask")]
+    partial class photoTask
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,6 +40,11 @@ namespace TaskList.Migrations
                         .IsRequired()
                         .HasColumnType("longtext")
                         .HasAnnotation("Relational:JsonPropertyName", "description");
+
+                    b.Property<string>("PhotoTask")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasAnnotation("Relational:JsonPropertyName", "photo_task");
 
                     b.Property<DateOnly>("StartTime")
                         .HasColumnType("date")

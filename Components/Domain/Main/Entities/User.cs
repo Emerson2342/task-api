@@ -21,7 +21,6 @@ namespace TaskList.Components.Domain.Main.Entities
         [JsonPropertyName("isEmailConfirmed")]
         public bool IsEmailConfirmed { get; set; } = false;
 
-
         public IList<TaskEntity>? Tasks { get; set; }
         public User() { }
 

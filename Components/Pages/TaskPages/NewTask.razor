@@ -52,7 +52,7 @@
 
     [SupplyParameterFromForm]
     private RequestTask model { get; set; } = new();
-    private string Ip = Configuration.Ip.IpAddress;
+    private string LocalHost = Configuration.Ip.LocalHost;
 
 
     private string token = string.Empty;
@@ -78,7 +78,7 @@
         {
             model.UserId = Guid.Parse(userId);
            // var url = $"https://{LocalHost}/task/create";
-            var url = $"https://{Ip}/task/create";
+            var url = $"https://{LocalHost}/task/create";
 
               Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 

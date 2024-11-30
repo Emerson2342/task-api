@@ -32,6 +32,10 @@ namespace TaskList.Components.Domain.Main.DTOs.TaskDTOs
         [SwaggerSchema("Data do término da tarefa.")]
         public DateOnly Deadline { get; set; } = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
 
+        [JsonPropertyName("photo_task")]
+        [SwaggerSchema("base64 da foto da tarefa")]
+        public string PhotoTask { get; set; } = string.Empty;
+
         [JsonConstructor]
         public RequestTask()
         {
