@@ -33,7 +33,7 @@ namespace TaskList.Components.Domain.Main.Entities
         [JsonConstructor]
         protected TaskEntity() { }
       
-        private TaskEntity(Guid userId, string title, string description, DateOnly startTime, DateOnly deadline)
+        private TaskEntity(Guid userId, string title, string description, DateOnly startTime, DateOnly deadline, string? photoTask)
         {
             UserId = userId;
             Title = title;
@@ -43,9 +43,10 @@ namespace TaskList.Components.Domain.Main.Entities
             Description = description;
             StartTime = startTime;
             Deadline = deadline;
+            PhotoTask = photoTask ?? string.Empty;
         }
 
-        public static TaskResult New(Guid userId, string title, string description, DateOnly startTime, DateOnly deadline)
+        public static TaskResult New(Guid userId, string title, string description, DateOnly startTime, DateOnly deadline, string? photoTask)
         {
             if (string.IsNullOrEmpty(title)) return new TaskResult(new Response("Favor preencher o título", 400));
 
@@ -53,7 +54,7 @@ namespace TaskList.Components.Domain.Main.Entities
             if (startTime < DateOnly.FromDateTime(DateTime.UtcNow)) return new TaskResult(new Response("Data inicial inválida", 400));
             if (deadline < startTime) return new TaskResult(new Response("Data final da atividade não pode ser menor que a data inicial!", 400));
 
-            TaskEntity task = new(userId, title, description, startTime, deadline);
+            TaskEntity task = new(userId, title, description, startTime, deadline, photoTask);
 
             return new TaskResult(new Response("Tarefa adicionada com sucesso!", task), task);
         }
