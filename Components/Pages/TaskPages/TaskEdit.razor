@@ -13,35 +13,35 @@
 @inject Authenticationservice Authenticationservice
 
 
-    <h3>Editar Tarefa</h3>
+<h3>Editar Tarefa</h3>
 
-    <EditForm Model="@Model" OnValidSubmit="HandleEdit" FormName="taskEditForm">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+<EditForm Model="@Model" OnValidSubmit="HandleEdit" FormName="taskEditForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-        <div class="mb-1">
-            <label for="Title" class="form-label">Título</label>
-            <InputText class="form-control" placeHolder="@ModelIn.Title" id="Title" @bind-Value="Model.Title" />
-        </div>
-        <div class="mb-3">
-            <label for="Text" class="form-label">Descrição</label>
-            <InputText class="form-control" id="Description"
-                       @bind-Value="Model.Description" />
+    <div class="mb-1">
+        <label for="Title" class="form-label">Título</label>
+        <InputText class="form-control" placeHolder="@ModelIn.Title" id="Title" @bind-Value="Model.Title" />
+    </div>
+    <div class="mb-3">
+        <label for="Text" class="form-label">Descrição</label>
+        <InputText class="form-control" id="Description"
+                   @bind-Value="Model.Description" />
 
-        </div>
-        <div class="mb-3">
-            <label for="Deadline" class="form-label">Data de Início</label>
-            <InputDate class="form-control" id="StartTime" @bind-Value="Model.StartTime" />
+    </div>
+    <div class="mb-3">
+        <label for="Deadline" class="form-label">Data de Início</label>
+        <InputDate class="form-control" id="StartTime" @bind-Value="Model.StartTime" />
 
-        </div>
-        <div class="mb-3">
-            <label for="Deadline" class="form-label">Data de Término</label>
-            <InputDate class="form-control" id="Deadline" @bind-Value="Model.Deadline" />
-        </div>
+    </div>
+    <div class="mb-3">
+        <label for="Deadline" class="form-label">Data de Término</label>
+        <InputDate class="form-control" id="Deadline" @bind-Value="Model.Deadline" />
+    </div>
 
-        <button class="btn btn-success" type="submit">Alterar Tarefa</button>
-        <a class="btn btn-primary" href="/task-list">Voltar</a>
-    </EditForm>
+    <button class="btn btn-success" type="submit">Alterar Tarefa</button>
+    <a class="btn btn-primary" href="/task-list">Voltar</a>
+</EditForm>
 
 @if (!string.IsNullOrEmpty(responseMessage))
 {
@@ -69,15 +69,13 @@
         if (firstRender)
         {
             token = await Authenticationservice.GetTokenAsync();
-             if (string.IsNullOrWhiteSpace(token))
-                 NavManager.NavigateTo("/authorize");
+            if (string.IsNullOrWhiteSpace(token))
+                NavManager.NavigateTo("/authorize");
             await OnInitializedAsync();
         }
     }
     new private async Task OnInitializedAsync()
     {
-
-       // var url = $"https://{LocalHost}/task/task/{Id}";
         var url = $"https://{Ip}/task/task/{Id}";
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await Http.GetAsync(url);
@@ -104,11 +102,26 @@
         try
         {
             Model.Id = Id;
-            taskEdited = Model;
-
             var url = $"https://{Ip}/task/edit";
 
-            var response = await Http.PostAsJsonAsync(url, taskEdited);
+            var formData = new MultipartFormDataContent
+            {
+                { new StringContent(Model.Id.ToString()), "Id" },
+                { new StringContent(Model.UserId.ToString()), "UserId" },
+                { new StringContent(Model.Title), "Title" },
+                { new StringContent(Model.Description), "Description" },
+                { new StringContent(Model.StartTime.ToString("yyyy-MM-dd")), "StartTime" },
+                { new StringContent(Model.Deadline.ToString("yyyy-MM-dd")), "Deadline" }
+            };
+
+            if (Model.PhotoFile != null)
+            {
+                var fileContent = new StreamContent(Model.PhotoFile.OpenReadStream());
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(Model.PhotoFile.ContentType);
+                formData.Add(fileContent, "PhotoFile", Model.PhotoFile.Name);
+            }
+
+            var response = await Http.PostAsync(url, formData);
 
             var result = await response.Content.ReadFromJsonAsync<Response>();
             if (result == null)

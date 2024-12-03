@@ -156,7 +156,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                     return new Response($"Usuário e/ou senha estão incorretos", 400);
 
                 if (!user.IsEmailConfirmed)
-                    return new Response($"Email não confirmado, favor confirmar o email!", 400);
+                    return new Response($"Usuário não autenticado!", 400);
 
                 var token = _tokenService.CreateToken(user);
 

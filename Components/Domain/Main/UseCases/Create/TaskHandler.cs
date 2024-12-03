@@ -27,7 +27,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
 
             var taskResult = New(newTask.UserId, newTask.Title, newTask.Description, newTask.StartTime, newTask.Deadline, newTask.PhotoTask);
 
-            //in case null object from taskResult
+        
             if (taskResult.TaskEntity == null)
                 return taskResult.Response;
 
@@ -44,7 +44,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
                 return new Response($"Tarefa para editar não encontrada! Id: {taskToEdit.Id}", 400);
             }
 
-            var taskEdited = TaskEntity.Edit(originalTask, taskToEdit);
+            var taskEdited = Edit(originalTask, taskToEdit);
 
             if (taskEdited.TaskEntity == null)
                 return taskEdited.Response;
@@ -70,6 +70,11 @@ namespace TaskList.Components.Domain.Main.UseCases.Create
             try
             {
                 List<TaskEntity> tasks = await _repository.ListTasks(userId);
+                
+                foreach (var task in tasks)
+                {
+                    task.PhotoTask = string.Empty;
+                }
                 return new Response(string.Empty, tasks);
             }
             catch

@@ -53,9 +53,7 @@ namespace TaskList.Components.Domain.Main.UseCases.Contracts
 
         public async Task<List<TaskEntity>> ListTasks(Guid userId)
         {
-
             return await _context.Tasks.Where(t => t.UserId == userId).ToListAsync();
         }
-
     }
 }
