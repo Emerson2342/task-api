@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Threading.Tasks;
 using TaskList.Components.Domain.Main.DTOs.TaskDTOs;
 using TaskList.Components.Domain.Main.Entities;
 using TaskList.Components.Domain.Main.UseCases.Create;
+using TaskList.Components.Domain.Main.UseCases.ResponseCase;
 using TaskList.Components.Pages.TaskPages;
 
 namespace TaskList.Components.Domain.Main.Controllers
@@ -31,20 +33,11 @@ namespace TaskList.Components.Domain.Main.Controllers
             if (newTask.PhotoFile != null)
             {
                 using var memoryStream = new MemoryStream();
-
+      
                 await newTask.PhotoFile.CopyToAsync(memoryStream);
+          
+                photoBase64 = Convert.ToBase64String(memoryStream.ToArray());
 
-                memoryStream.Position = 0;
-
-                using (var image = Image.Load(memoryStream))
-                {
-
-                    var compressionQuality = 20;
-                    using var compressedStream = new MemoryStream();
-                    image.Save(compressedStream, new JpegEncoder { Quality = compressionQuality });
-
-                    photoBase64 = Convert.ToBase64String(compressedStream.ToArray());
-                }
                 newTask.PhotoTask = photoBase64;
             }
 
@@ -65,17 +58,7 @@ namespace TaskList.Components.Domain.Main.Controllers
 
                 await taskToEdit.PhotoFile.CopyToAsync(memoryStream);
 
-                memoryStream.Position = 0;
-
-                using (var image = Image.Load(memoryStream))
-                {
-
-                    var compressionQuality = 20;
-                    using var compressedStream = new MemoryStream();
-                    image.Save(compressedStream, new JpegEncoder { Quality = compressionQuality });
-
-                    photoBase64 = Convert.ToBase64String(compressedStream.ToArray());
-                }
+                photoBase64 = Convert.ToBase64String(memoryStream.ToArray());
 
                 taskToEdit.PhotoTask = photoBase64;
             }
@@ -86,13 +69,23 @@ namespace TaskList.Components.Domain.Main.Controllers
 
         }
 
+        [SwaggerOperation(Summary = "Recupera foto da tarefa.", Description = "Endpoint para recuperar foto da tarefa")]
+        [HttpGet("get-photo/{taskId}")]
+        public async Task<IActionResult> GetPhotoFile([FromRoute] Guid taskId)
+        {
+            var result = await _handler.GetTask(taskId);
+            var base64 = result.TaskList?.PhotoTask.ToString();
+            if (string.IsNullOrEmpty(base64))
+                return NotFound();
+            var fileBytes = Convert.FromBase64String(base64);
+            return File(fileBytes, "image/jpeg", $"{taskId}.jpg");
+        }
+
         [SwaggerOperation(Summary = "Remover tarefa.", Description = "Endpoint para apagar uma tarefa")]
         [HttpPost("delete")]
         public async Task<IActionResult> DeleteTask([FromBody] RequestTask taskToDelete)
         {
             var result = await _handler.DeleteTask(taskToDelete.Id);
-
-
             return Ok(result);
 
         }
